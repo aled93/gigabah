@@ -23,72 +23,58 @@ var _target_direction: Vector3
 signal cooldown_start()
 ## When cooldown value become zero
 signal cooldown_end()
+## Emits before calling ability's _cast
 signal start_casting()
+## Emits after calling ability's _cast and it returned no error
 signal succesfully_casted()
 
 
+## How this ability can be casted. Currently game expects that
+## result of this function will be same all the time.
 @abstract func _get_cast_method() -> CastMethod
 
 
-## Overridable, don't call super it's placeholder
-func _cast_notarget() -> CastResult:
-	return CastResult.ERROR_ABILITY_NOT_NOTARGET
-
-## Overridable, don't call super it's placeholder
-# func _cast_targeted(_target: Node) -> CastResult:
-# 	return CastResult.ABILITY_NOT_TARGETED
+## Main function of ability. Called when all checks done like cooldown,
+## validating target, caster status.
+@abstract func _cast() -> CastResult
 
 
-## Overridable, don't call super it's placeholder
-func _cast_in_direction(_dir: Vector3) -> CastResult:
-	return CastResult.ERROR_ABILITY_NOT_DIRECTIONAL
-
-
-func cast_notarget() -> CastResult:
-	var err := _is_castable()
-	if err:
-		return err
+func cast() -> CastResult:
+	var res := _is_castable()
+	if res:
+		return res
 
 	_pre_cast()
 
-	err = _cast_notarget()
-	if err:
-		return err
+	res = _cast()
+	if res != CastResult.OK:
+		return res
 
 	_post_cast()
 
 	return CastResult.OK
 
-# func cast_targeted(target: Node) -> CastResult:
-# 	var err := _is_castable()
-# 	if err:
-# 		return err
 
-# 	_pre_cast()
-
-# 	err = _cast_targeted(target)
-# 	if err:
-# 		return err
-
-# 	_post_cast()
-
-# 	return CastResult.OK
+func set_cast_targets(
+		point: Vector3,
+		node: Node3D,
+		direction: Vector3,
+) -> void:
+	_target_point = point
+	_target_node = node
+	_target_direction = direction
 
 
-func cast_in_direction(dir: Vector3) -> CastResult:
-	var err := _is_castable()
-	if err:
-		return err
+func _has_target_point() -> bool:
+	return not is_nan(_target_point.x)
 
-	_pre_cast()
 
-	err = _cast_in_direction(dir)
-	if err:
-		return err
+func _has_target_node() -> bool:
+	return true if _target_node else false
 
-	_post_cast()
 
-	return CastResult.OK
+func _has_target_direction() -> bool:
+	return not is_nan(_target_direction.x)
 
 
 func _is_castable() -> CastResult:
@@ -133,14 +119,12 @@ enum CastResult {
 	OK,
 	ERROR_NO_CASTER,
 	ERROR_ON_COOLDOWN,
-	ERROR_ABILITY_NOT_NOTARGET,
-	ERROR_ABILITY_NOT_TARGETED,
-	ERROR_ABILITY_NOT_DIRECTIONAL,
+	ERROR_NO_TARGET,
 	ERROR_TARGET_IS_FAR,
 }
 
 enum CastMethod {
 	NO_TARGET,
-	# TARGETED,
+	TARGETED,
 	DIRECTIONAL,
 }

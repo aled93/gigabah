@@ -9,8 +9,11 @@ func _get_cast_method() -> CastMethod:
 	return Ability.CastMethod.DIRECTIONAL
 
 
-func _cast_in_direction(dir: Vector3) -> CastError:
-	var plain_dir := (dir * Vector3(1.0, 0.0, 1.0)).normalized()
+func _cast() -> CastResult:
+	if not _has_target_direction():
+		return CastResult.ERROR_NO_TARGET
+
+	var plain_dir := (_target_direction * Vector3(1.0, 0.0, 1.0)).normalized()
 	var ball := devball_scene.instantiate() as Node3D
 
 	# TODO: temp, find better way to do it
@@ -31,7 +34,7 @@ func _cast_in_direction(dir: Vector3) -> CastError:
 
 	cooldown = 0.5
 
-	return CastError.OK
+	return CastResult.OK
 
 
 func _on_projectile_entered_hitbox(hitbox: HitBox3D, proj: Node3D) -> void:
