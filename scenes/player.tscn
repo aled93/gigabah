@@ -14,8 +14,10 @@
 [ext_resource type="Script" uid="uid://5tihk4woc060" path="res://scripts/hitbox_3d.gd" id="7_qfm1y"]
 [ext_resource type="Script" uid="uid://bo87xn437osdk" path="res://scripts/radial_menu/radial_menu_item_behavior.gd" id="8_f1ej7"]
 [ext_resource type="AnimationLibrary" uid="uid://buk878wi5duma" path="res://animations/radial_menu/radial_menu_animations.res" id="9_oprun"]
-[ext_resource type="Script" uid="uid://dygq0iwvhu8ou" path="res://scripts/animations_base.gd" id="11_d2wvv"]
 [ext_resource type="Script" uid="uid://c1ur4seavqi8i" path="res://scripts/radial_menu/animation.gd" id="11_qfm1y"]
+[ext_resource type="Script" uid="uid://c3f0isfdiahmo" path="res://scripts/animation/animation_state_machine.gd" id="14_a8ls1"]
+[ext_resource type="Script" uid="uid://1suj5uo5r0oa" path="res://scripts/animation/states/Idle.gd" id="15_qfm1y"]
+[ext_resource type="Script" uid="uid://c8vkjewtt1q0c" path="res://scripts/animation/states/Running.gd" id="16_fulsm"]
 [ext_resource type="Script" uid="uid://cw41hh8xohvjm" path="res://scripts/camera_controller.gd" id="15_oprun"]
 [ext_resource type="Script" uid="uid://1lurjfq8mjgm" path="res://scripts/abilities/devball.gd" id="16_a8ls1"]
 
@@ -1985,10 +1987,6 @@ hower_color = Color(0.5, 0, 0, 1)
 press_color = Color(0.4, 0, 0, 1)
 metadata/_custom_type_script = "uid://bo87xn437osdk"
 
-[node name="AnimationsBase" type="Node" parent="Hero" node_paths=PackedStringArray("input_controller")]
-script = ExtResource("11_d2wvv")
-input_controller = NodePath("../../InputController")
-
 [node name="NetworkBoundingArea3D" type="Area3D" parent="Hero"]
 collision_layer = 2147483648
 collision_mask = 2147483648
@@ -2036,6 +2034,22 @@ transform = Transform3D(1, 0, 0, 0, 0.5533916, 0.83292127, 0, -0.83292127, 0.553
 fov = 70.8
 size = 15.755
 near = 0.001
+
+[node name="AnimationStateMachine" type="Node" parent="Hero" node_paths=PackedStringArray("animation_player_node", "init_state")]
+script = ExtResource("14_a8ls1")
+animation_player_node = NodePath("../PlayerModel/AnimationPlayer")
+init_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://c3f0isfdiahmo"
+
+[node name="Idle" type="Node" parent="Hero/AnimationStateMachine" node_paths=PackedStringArray("input_controller")]
+script = ExtResource("15_qfm1y")
+input_controller = NodePath("../../../InputController")
+animation_name = "Idle"
+
+[node name="Running" type="Node" parent="Hero/AnimationStateMachine" node_paths=PackedStringArray("input_controller")]
+script = ExtResource("16_fulsm")
+input_controller = NodePath("../../../InputController")
+animation_name = "Walk"
 
 [node name="CameraController" type="Node" parent="Camera3D" node_paths=PackedStringArray("camera", "view_target")]
 script = ExtResource("15_oprun")
