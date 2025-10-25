@@ -26,12 +26,12 @@ func get_ability(index: int) -> Ability:
 	return null
 
 
-func add_ability(ability: Ability) -> CasterError:
+func add_ability(ability: Ability) -> CasterResult:
 	if not ability:
-		return CasterError.ABILITY_IS_NULL
+		return CasterResult.ERROR_ABILITY_IS_NULL
 
 	if ability in _abilities:
-		return CasterError.ALREADY_HAVE_THIS_ABILITY
+		return CasterResult.ERROR_ALREADY_HAVE_THIS_ABILITY
 
 	_abilities.append(ability)
 	ability.caster = self
@@ -39,12 +39,12 @@ func add_ability(ability: Ability) -> CasterError:
 	ability_added.emit(_abilities.size() - 1)
 	NetSync.inherit_visibility(owner, ability, true)
 
-	return CasterError.OK
+	return CasterResult.OK
 
 
-func remove_ability(ability_index: int) -> CasterError:
+func remove_ability(ability_index: int) -> CasterResult:
 	if ability_index < 0 or ability_index >= _abilities.size():
-		return CasterError.ABILITY_INDEX_OF_OUT_BOUNDS
+		return CasterResult.ERROR_ABILITY_INDEX_OF_OUT_BOUNDS
 
 	var ability := _abilities[ability_index]
 
@@ -53,7 +53,7 @@ func remove_ability(ability_index: int) -> CasterError:
 
 	ability_removed.emit(ability)
 
-	return CasterError.OK
+	return CasterResult.OK
 
 
 func _ready() -> void:
@@ -64,7 +64,7 @@ func _ready() -> void:
 
 			var err := add_ability(node as Ability)
 			if err:
-				push_error("failed adding ability: %s" % CasterError.keys()[err])
+				push_error("failed adding ability: %s" % CasterResult.keys()[err])
 
 		_container_node.child_entered_tree.connect(_on_ability_container_child_entered)
 
@@ -85,9 +85,9 @@ func _on_ability_container_child_entered(node: Node) -> void:
 	add_ability(ability)
 
 
-enum CasterError {
+enum CasterResult {
 	OK,
-	ABILITY_IS_NULL,
-	ABILITY_INDEX_OF_OUT_BOUNDS,
-	ALREADY_HAVE_THIS_ABILITY,
+	ERROR_ABILITY_IS_NULL,
+	ERROR_ABILITY_INDEX_OF_OUT_BOUNDS,
+	ERROR_ALREADY_HAVE_THIS_ABILITY,
 }

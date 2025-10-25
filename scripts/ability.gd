@@ -23,20 +23,20 @@ signal succesfully_casted()
 
 
 ## Overridable, don't call super it's placeholder
-func _cast_notarget() -> CastError:
-	return CastError.ABILITY_NOT_NOTARGET
+func _cast_notarget() -> CastResult:
+	return CastResult.ERROR_ABILITY_NOT_NOTARGET
 
 ## Overridable, don't call super it's placeholder
-# func _cast_targeted(_target: Node) -> CastError:
-# 	return CastError.ABILITY_NOT_TARGETED
+# func _cast_targeted(_target: Node) -> CastResult:
+# 	return CastResult.ABILITY_NOT_TARGETED
 
 
 ## Overridable, don't call super it's placeholder
-func _cast_in_direction(_dir: Vector3) -> CastError:
-	return CastError.ABILITY_NOT_DIRECTIONAL
+func _cast_in_direction(_dir: Vector3) -> CastResult:
+	return CastResult.ERROR_ABILITY_NOT_DIRECTIONAL
 
 
-func cast_notarget() -> CastError:
+func cast_notarget() -> CastResult:
 	var err := _is_castable()
 	if err:
 		return err
@@ -49,9 +49,9 @@ func cast_notarget() -> CastError:
 
 	_post_cast()
 
-	return CastError.OK
+	return CastResult.OK
 
-# func cast_targeted(target: Node) -> CastError:
+# func cast_targeted(target: Node) -> CastResult:
 # 	var err := _is_castable()
 # 	if err:
 # 		return err
@@ -64,10 +64,10 @@ func cast_notarget() -> CastError:
 
 # 	_post_cast()
 
-# 	return CastError.OK
+# 	return CastResult.OK
 
 
-func cast_in_direction(dir: Vector3) -> CastError:
+func cast_in_direction(dir: Vector3) -> CastResult:
 	var err := _is_castable()
 	if err:
 		return err
@@ -80,17 +80,17 @@ func cast_in_direction(dir: Vector3) -> CastError:
 
 	_post_cast()
 
-	return CastError.OK
+	return CastResult.OK
 
 
-func _is_castable() -> CastError:
+func _is_castable() -> CastResult:
 	if not caster:
-		return CastError.NO_CASTER
+		return CastResult.ERROR_NO_CASTER
 
 	if cooldown > 0.0:
-		return CastError.ON_COOLDOWN
+		return CastResult.ERROR_ON_COOLDOWN
 
-	return CastError.OK
+	return CastResult.OK
 
 
 func _pre_cast() -> void:
@@ -121,14 +121,14 @@ func _rpc_sync_cd(cd: float) -> void:
 	cooldown = cd
 
 
-enum CastError {
+enum CastResult {
 	OK,
-	NO_CASTER,
-	ON_COOLDOWN,
-	ABILITY_NOT_NOTARGET,
-	ABILITY_NOT_TARGETED,
-	ABILITY_NOT_DIRECTIONAL,
-	TARGET_IS_FAR,
+	ERROR_NO_CASTER,
+	ERROR_ON_COOLDOWN,
+	ERROR_ABILITY_NOT_NOTARGET,
+	ERROR_ABILITY_NOT_TARGETED,
+	ERROR_ABILITY_NOT_DIRECTIONAL,
+	ERROR_TARGET_IS_FAR,
 }
 
 enum CastMethod {
