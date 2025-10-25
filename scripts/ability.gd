@@ -11,6 +11,14 @@ var cooldown: float:
 			cooldown_start.emit()
 			_sync_cd()
 
+## Point in global space where caster pointing his cursor. Can be all NANs
+## if cursor pointing not terrain or in UI
+var _target_point: Vector3
+## Node3D that caster pointing with his cursor. Can be null
+var _target_node: Node3D
+## Unit vector of direction relative caster towards cursor
+var _target_direction: Vector3
+
 ## When cooldown value changed from zero to positive value
 signal cooldown_start()
 ## When cooldown value become zero
