@@ -13,6 +13,7 @@ class_name InputController
 @export var camera: Camera3D
 @export var cursor_raycast: RayCast3D
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	var peer_id := owner.name.to_int()
