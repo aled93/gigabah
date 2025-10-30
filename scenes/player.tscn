@@ -126,7 +126,7 @@ replication_interval = 0.02
 delta_interval = 0.02
 replication_config = SubResource("SceneReplicationConfig_f1ej7")
 script = ExtResource("4_3v2ag")
-animation_player = NodePath("")
+animation_player = NodePath("../../PlayerModel/AnimationPlayer")
 
 [node name="CameraController" type="Node" parent="Hero/Components" node_paths=PackedStringArray("camera", "view_target")]
 script = ExtResource("15_oprun")
