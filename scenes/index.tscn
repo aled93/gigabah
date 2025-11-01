@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://f0ylqu4wka2x" path="res://scripts/multiplayer_spawner.gd" id="2_hhnvu"]
 [ext_resource type="PackedScene" uid="uid://dmp8nc3aenbut" path="res://scenes/player.tscn" id="3_8s3bs"]
 [ext_resource type="PackedScene" uid="uid://cabfjhgqmmx3k" path="res://scenes/bullet.tscn" id="4_hhnvu"]
-[ext_resource type="PackedScene" path="res://scenes/ui/in_game_menu.tscn" id="5_ingamemenu"]
+[ext_resource type="PackedScene" uid="uid://dxtxfb21jpq0" path="res://scenes/ui/in_game_menu.tscn" id="5_ingamemenu"]
 [ext_resource type="PackedScene" uid="uid://bccib7r8tci6f" path="res://assets/models/maps/Arena.blend" id="7_cjd57"]
 
 [sub_resource type="Environment" id="Environment_cjd57"]
@@ -54,6 +54,6 @@ shadow_enabled = true
 omni_range = 16.9915
 
 [node name="InGameMenu" parent="." instance=ExtResource("5_ingamemenu")]
-visible = true
+visible = false
 
 [node name="Arena" parent="." instance=ExtResource("7_cjd57")]

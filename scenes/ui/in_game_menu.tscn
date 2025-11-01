@@ -1,12 +1,9 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=2 format=3 uid="uid://dxtxfb21jpq0"]
 
 [ext_resource type="Script" uid="uid://dw1e2iesvp8ys" path="res://scripts/ui/in_game_menu.gd" id="1_script"]
 
-[sub_resource type="Theme" id="Theme_placeholder"]
-
 [node name="InGameMenu" type="CanvasLayer"]
 layer = 100
-visible = false
 script = ExtResource("1_script")
 
 [node name="Control" type="Control" parent="."]
@@ -19,13 +16,13 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="Backdrop" type="ColorRect" parent="Control"]
-anchors_preset = 15
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color(0, 0, 0, 0.55)
 
 [node name="Center" type="CenterContainer" parent="Control"]
-anchors_preset = 15
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -33,21 +30,26 @@ grow_vertical = 2
 
 [node name="VBox" type="VBoxContainer" parent="Control/Center"]
 custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
 alignment = 1
 
 [node name="Title" type="Label" parent="Control/Center/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 42
 text = "PAUSED"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 42
 
 [node name="SettingsButton" type="Button" parent="Control/Center/VBox"]
+layout_mode = 2
 size_flags_horizontal = 3
 text = "Settings"
 
 [node name="BackButton" type="Button" parent="Control/Center/VBox"]
+layout_mode = 2
 size_flags_horizontal = 3
 text = "Back"
 
 [node name="QuitButton" type="Button" parent="Control/Center/VBox"]
+layout_mode = 2
 size_flags_horizontal = 3
 text = "Quit"

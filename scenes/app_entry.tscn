@@ -1,0 +1,10 @@
+[gd_scene load_steps=4 format=3 uid="uid://qhdghknjrpsr"]
+
+[ext_resource type="Script" uid="uid://dmvnv5qnmxp4m" path="res://scripts/app.gd" id="1_e6umj"]
+[ext_resource type="PackedScene" uid="uid://bde2flq2egpcv" path="res://scenes/index.tscn" id="2_6lkkj"]
+[ext_resource type="PackedScene" uid="uid://dngglbijh1j4l" path="res://scenes/ui/main_menu.tscn" id="3_y32a2"]
+
+[node name="AppEntry" type="Node"]
+script = ExtResource("1_e6umj")
+dedicated_server_scene = ExtResource("2_6lkkj")
+client_scene = ExtResource("3_y32a2")

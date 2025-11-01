@@ -1,0 +1,10 @@
+key,ru
+main_menu_enter_game,Войти в игру
+main_menu_settings,Настройки
+main_menu_quit,Выход
+main_menu_telegram_link_tooltip,Группа в Телеграме
+main_menu_github_repo_link_tooltip,Репозиторий игры на github.com
+settings_menu_title,Настройки
+settings_menu_save_button,Сохранить
+settings_menu_property_user,Игрок
+settings_menu_property_user_display_name,Отображаемое имя
