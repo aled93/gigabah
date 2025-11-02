@@ -19,7 +19,11 @@ func _ready() -> void:
 
 
 func _on_enter_game_pressed() -> void:
-	NetworkManager.start_client()
+	var join_addr: Variant = App.cmdline_arguments.get("--join-address")
+	if join_addr is String:
+		NetworkManager.start_client(join_addr as String)
+	else:
+		NetworkManager.start_client()
 	get_tree().change_scene_to_packed(game_scene)
 
 
