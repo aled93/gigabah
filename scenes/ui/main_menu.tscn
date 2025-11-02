@@ -189,12 +189,11 @@ horizontal_alignment = 1
 
 [node name="PropertiesInspector" type="Node" parent="AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer" node_paths=PackedStringArray("properties_container")]
 script = ExtResource("7_btxxm")
-properties_container = NodePath("../ScrollContainer/MarginContainer/SettingsPropertiesContainer")
+properties_container = NodePath("../ScrollContainer/MarginContainer/VBoxContainer/SettingsPropertiesContainer")
 property_name_prefix = "settings_menu_property_"
 metadata/_custom_type_script = "uid://iq5odej32qrx"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
@@ -207,7 +206,10 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="SettingsPropertiesContainer" type="VBoxContainer" parent="AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer/ScrollContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="SettingsPropertiesContainer" type="VBoxContainer" parent="AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer"]

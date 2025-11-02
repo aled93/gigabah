@@ -4,6 +4,7 @@ extends Node
 ## export variables using `@export_custom(PropertiesInspector.PROPERTY_HINT_DONT_RENDER, "")`
 ## and this variable will not be visible in settings page
 const PROPERTY_HINT_DONT_RENDER = PROPERTY_HINT_MAX + 1
+const PROPERTY_HINT_CUSTOM_EDITOR = PROPERTY_HINT_MAX + 2
 
 @export var properties_container: Container
 ## Label in property editor will have label with text prefixed with this prefix.
@@ -101,13 +102,15 @@ func _populate_option_editors() -> void:
 		if (prop.usage & PROPERTY_USAGE_STORAGE) == 0:
 			continue
 
-		if (prop.hint & PROPERTY_HINT_DONT_RENDER) != 0:
+		if prop.hint == PROPERTY_HINT_DONT_RENDER:
 			continue
 
 		var prop_name := prop.name as StringName
 		var prop_editor := _create_property_editor(prop)
 		if not prop_editor:
 			continue
+
+		cur_container.add_child(prop_editor)
 
 		var prop_value: Variant = properties_source.get(prop.name)
 
@@ -118,7 +121,6 @@ func _populate_option_editors() -> void:
 		prop_editor.value_changed.connect(_on_editor_value_changed.bind(prop_editor))
 
 		_editors[prop_name] = prop_editor
-		cur_container.add_child(prop_editor)
 
 
 func _on_editor_value_changed(editor: BaseOptionEditor) -> void:
@@ -130,9 +132,9 @@ func _on_editor_value_changed(editor: BaseOptionEditor) -> void:
 
 
 func _create_property_editor(prop: Dictionary) -> BaseOptionEditor:
-	var editor_name := prop.hint_string as String
-	if editor_name.is_empty():
-		editor_name = _get_prop_type_name(prop)
+	var editor_name := _get_prop_type_name(prop)
+	if prop.hint == PROPERTY_HINT_CUSTOM_EDITOR:
+		editor_name = prop.hint_string as String
 	var scene_path: String = property_editor_scene_path_pattern % editor_name
 	var control_scene := load(scene_path) as PackedScene
 	if control_scene == null:
