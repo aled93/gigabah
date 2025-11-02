@@ -22,6 +22,8 @@ func start_server(listen_addr: String = "*", listen_port: int = PORT) -> Error:
 			return res
 
 	multiplayer.multiplayer_peer = local_peer
+	multiplayer.peer_connected.connect(_on_peer_connected)
+	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	print("Server started and listening %s:%d" % [listen_addr, listen_port])
 
 	return OK
@@ -52,3 +54,14 @@ func _on_connection_failed() -> void:
 
 func _on_server_disconnected() -> void:
 	print("Disconnected from server.")
+
+	if not OS.has_feature("dedicated_server"):
+		get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+
+
+func _on_peer_connected(peer_id: int) -> void:
+	print("Peer %d connected" % peer_id)
+
+
+func _on_peer_disconnected(peer_id: int) -> void:
+	print("Peer %d disconnected" % peer_id)
