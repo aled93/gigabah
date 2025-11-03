@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+App="*res://scripts/app.gd"
 InputConfigLoader="*res://scripts/input_config_loader.gd"
 NetworkManager="*res://scripts/network_manager.gd"
 
