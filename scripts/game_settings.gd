@@ -31,7 +31,8 @@ var input_action_events: Dictionary[StringName, Array]
 func _init() -> void:
 	# pull defaults of input bindings
 	for action: StringName in InputMap.get_actions():
-		input_action_events.set(action, InputMap.action_get_events(action))
+		if not action.begins_with("ui_"):
+			input_action_events.set(action, InputMap.action_get_events(action))
 
 
 func save() -> void:
