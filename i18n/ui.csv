@@ -4,6 +4,7 @@ main_menu_settings,Настройки
 main_menu_quit,Выход
 main_menu_telegram_link_tooltip,Группа в Телеграме
 main_menu_github_repo_link_tooltip,Репозиторий игры на github.com
+main_menu_hide_menu,Продолжить играть
 settings_menu_title,Настройки
 settings_menu_save_button,Сохранить
 settings_menu_property_user,Игрок

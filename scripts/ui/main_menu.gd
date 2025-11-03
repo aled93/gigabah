@@ -7,6 +7,13 @@ extends Control
 @onready var settings_panel: Control = %SettingsPanel
 @onready var settings_save_button: Button = %SaveButton
 
+signal hide_requested()
+
+
+func set_as_ingame(ingame: bool) -> void:
+	get_tree().set_group(&"ingame_only", "visible", ingame)
+	get_tree().set_group(&"not_ingame_only", "visible", not ingame)
+
 
 func _ready() -> void:
 	settings_panel.visible = false
@@ -16,6 +23,8 @@ func _ready() -> void:
 
 	settings_save_button.pressed.connect(_on_settings_save_pressed)
 	settings_save_button.disabled = false
+
+	set_as_ingame(false)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -34,6 +43,10 @@ func _on_enter_game_pressed() -> void:
 	else:
 		NetworkManager.start_client()
 	get_tree().change_scene_to_packed(game_scene)
+
+
+func _on_hide_menu_pressed() -> void:
+	hide_requested.emit()
 
 
 func _on_settings_pressed() -> void:

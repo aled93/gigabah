@@ -38,7 +38,7 @@ script = ExtResource("1_fe2o3")
 game_scene = ExtResource("2_1g8jr")
 settings_property_inspector = NodePath("AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer/PropertiesInspector")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." groups=["not_ingame_only"]]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -46,6 +46,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.2509804, 0.2509804, 0.2509804, 1)
+
+[node name="IngameBackground" type="ColorRect" parent="." groups=["ingame_only"]]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5019608)
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
 layout_mode = 1
@@ -123,9 +132,13 @@ scale_curve = SubResource("Curve_uhagc")
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="ButtonEnterGame" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer" instance=ExtResource("1_sl1te")]
+[node name="ButtonEnterGame" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer" groups=["not_ingame_only"] instance=ExtResource("1_sl1te")]
 layout_mode = 2
 text = "main_menu_enter_game"
+
+[node name="ButtonHideMenu" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer" groups=["ingame_only"] instance=ExtResource("1_sl1te")]
+layout_mode = 2
+text = "main_menu_hide_menu"
 
 [node name="ButtonSettings" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer" instance=ExtResource("1_sl1te")]
 layout_mode = 2
@@ -221,6 +234,7 @@ layout_mode = 2
 text = "settings_menu_save_button"
 
 [connection signal="pressed" from="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer/ButtonEnterGame" to="." method="_on_enter_game_pressed"]
+[connection signal="pressed" from="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer/ButtonHideMenu" to="." method="_on_hide_menu_pressed"]
 [connection signal="pressed" from="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer/ButtonSettings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer/ButtonQuit" to="." method="_on_quit_pressed"]
 
