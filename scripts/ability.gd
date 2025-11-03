@@ -113,7 +113,15 @@ func _process(delta: float) -> void:
 
 func _sync_cd() -> void:
 	if is_multiplayer_authority():
-		_rpc_sync_cd.rpc(cooldown)
+		var spawner_inst_id: Variant = caster.owner.get_meta(AdvancedMultiplayerSpawner.META_ADVANCED_SPAWNER)
+		if spawner_inst_id == null:
+			push_error("no advanced spawner meta for node %s" % owner)
+			return
+
+		var spawner := instance_from_id(spawner_inst_id) as AdvancedMultiplayerSpawner
+		for i: int in range(spawner.get_peers_have_vision_count(caster.owner)):
+			var peer_id := spawner.get_peer_have_vision(caster.owner, i)
+			_rpc_sync_cd.rpc_id(peer_id, cooldown)
 
 
 @rpc("authority", "call_remote", "reliable")
