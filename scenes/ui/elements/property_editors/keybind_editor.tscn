@@ -52,4 +52,5 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_3ftp3")
 theme_override_styles/pressed_mirrored = SubResource("StyleBoxFlat_3ftp3")
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_3ftp3")
 theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxFlat_3ftp3")
+toggle_mode = true
 clip_text = true
