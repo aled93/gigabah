@@ -14,6 +14,9 @@ func _ready() -> void:
 	bind_a_button.pressed.connect(_on_bind_button_pressed.bind(bind_a_button, 0))
 	bind_b_button.pressed.connect(_on_bind_button_pressed.bind(bind_b_button, 1))
 
+	bind_a_button.gui_input.connect(_on_bind_button_input.bind(bind_a_button, 0))
+	bind_b_button.gui_input.connect(_on_bind_button_input.bind(bind_b_button, 1))
+
 
 func set_property_name(prop_name: String) -> void:
 	if not name_label:
@@ -27,12 +30,25 @@ func set_property_name(prop_name: String) -> void:
 func set_property_value(value: Variant) -> void:
 	_all_binds = value as Array
 
-	bind_a_button.text = _input_event_to_localization_key(_all_binds[0] if _all_binds.size() >= 1 else null)
-	bind_b_button.text = _input_event_to_localization_key(_all_binds[1] if _all_binds.size() >= 2 else null)
+	_update_representation()
 
 
 func get_property_value() -> Variant:
 	return _all_binds
+
+
+func _update_representation() -> void:
+	bind_b_button.disabled = _all_binds.is_empty()
+
+	if _all_binds.size() >= 1:
+		bind_a_button.text = _input_event_to_localization_key(_all_binds[0])
+	else:
+		bind_a_button.text = "input_event_none"
+
+	if _all_binds.size() >= 2:
+		bind_b_button.text = _input_event_to_localization_key(_all_binds[1])
+	else:
+		bind_b_button.text = "input_event_none"
 
 
 func _input(event: InputEvent) -> void:
@@ -43,12 +59,23 @@ func _input(event: InputEvent) -> void:
 func _on_bind_button_pressed(bind_button: Button, index: int) -> void:
 	var new_bind := await _any_input_pressed as InputEvent
 	get_viewport().set_input_as_handled()
-	_all_binds[index] = new_bind
 
-	bind_button.text = _input_event_to_localization_key(new_bind)
+	if index >= _all_binds.size():
+		_all_binds.append(new_bind)
+	else:
+		_all_binds[index] = new_bind
+
 	bind_button.button_pressed = false
 
+	_update_representation()
 	value_changed.emit()
+
+
+func _on_bind_button_input(event: InputEvent, _bind_button: Button, index: int) -> void:
+	if event.is_action_pressed(&"ui_delete_binding"):
+		if index < _all_binds.size():
+			_all_binds.remove_at(index)
+		_update_representation()
 
 
 func _input_event_to_localization_key(ev: InputEvent) -> String:
