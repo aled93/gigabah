@@ -1,0 +1,61 @@
+name: "Bug Report"
+description: Баг-репорт
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Описание"
+      description: "Подробное описание бага"
+      placeholder: |
+        Пример: 
+        Камера начинает дёргаться после того как я настроил, перенастроил, сбросил привязку действия к клавише
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction_steps
+    attributes:
+      label: "Шаги воспроизведения"
+      description: "Последовательность действий для воспроизведения бага"
+      placeholder: |
+        Пример: 
+        1. Включил игру
+        2. Нажал ESC
+        3. Зашёл в настройки
+        4. Настроил или перенастроил/сбросил привязку(и) действия к клавише
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_result
+    attributes:
+      label: "Ожидаемый результат"
+      placeholder: "Пример: Поведение камеры остаётся таким же каким было"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual_result
+    attributes:
+      label: "Фактический результат"
+      placeholder: "Пример: После настройки, перенастройки, сброса привязки действия к клавише, камера начинает дёргаться"
+    validations:
+      required: true
+
+  - type: textarea
+    id: version
+    attributes:
+      label: "Версия"
+      description: "Ветка и название билда"
+      placeholder: "Пример: main branch 01214c5"
+    validations:
+      required: true
+
+  - type: textarea
+    id: attachments
+    attributes:
+      label: "Вложения"
+      description: "Прямое вложение на GitHub (ограничение 10мегабайт на каждый файл, скриншоты форматов: .png, .jpg, .jpeg, .svg; видео форматов: .mp4, .mov, .webm) или ссылки на видео/скриншоты"
+      placeholder: "Пример: https://example.com/..."
