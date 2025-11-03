@@ -54,4 +54,5 @@ func _on_settings_property_changed(_editor: BaseOptionEditor, _new_value: Varian
 
 func _on_settings_save_pressed() -> void:
 	settings_property_inspector.apply_changes()
+	GameSettings.instance.apply_input_action_events()
 	settings_save_button.disabled = true
