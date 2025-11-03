@@ -2,7 +2,7 @@ class_name DevBall
 extends Ability
 
 var devball_scene := preload("res://scenes/bullet.tscn")
-var impact_scene := preload("res://scenes/abilities/vfx_impact.tscn")
+var impact_scene := preload("res://scenes/vfx/abilities/vfx_impact.tscn")
 
 
 func _get_cast_method() -> CastMethod:
@@ -57,12 +57,12 @@ func _spawn_impact(parent: Node3D, position: Vector3) -> void:
 
 
 func _inherit_network_visibility(target_node: Node) -> void:
-	var spawner_inst_id: Variant = owner.get_meta(AdvancedMultiplayerSpawner.META_ADVANCED_SPAWNER)
+	var spawner_inst_id: Variant = caster.owner.get_meta(AdvancedMultiplayerSpawner.META_ADVANCED_SPAWNER)
 	if spawner_inst_id == null:
-		push_error("no advanced spawner meta for node %s" % owner)
+		push_error("no advanced spawner meta for node %s" % caster.owner)
 		return
 
 	var spawner := instance_from_id(spawner_inst_id) as AdvancedMultiplayerSpawner
-	for i: int in range(spawner.get_peers_have_vision_count(owner)):
-		var peer_id := spawner.get_peer_have_vision(owner, i)
+	for i: int in range(spawner.get_peers_have_vision_count(caster.owner)):
+		var peer_id := spawner.get_peer_have_vision(caster.owner, i)
 		AdvancedMultiplayerSpawner.set_visibility_for(peer_id, target_node, true)
