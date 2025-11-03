@@ -18,6 +18,15 @@ func _ready() -> void:
 	settings_save_button.disabled = false
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed(&"ui_down"):
+		if not get_viewport().gui_get_focus_owner():
+			var focusable := find_next_valid_focus()
+			if focusable:
+				focusable.grab_focus()
+				get_viewport().set_input_as_handled()
+
+
 func _on_enter_game_pressed() -> void:
 	var join_addr: Variant = App.cmdline_arguments.get("--join-address")
 	if join_addr is String:
@@ -29,6 +38,10 @@ func _on_enter_game_pressed() -> void:
 
 func _on_settings_pressed() -> void:
 	settings_panel.visible = not settings_panel.visible
+
+	var focusable := settings_panel.find_next_valid_focus()
+	if focusable:
+		focusable.call_deferred(&"grab_focus")
 
 
 func _on_quit_pressed() -> void:
