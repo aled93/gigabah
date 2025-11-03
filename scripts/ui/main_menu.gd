@@ -45,7 +45,7 @@ func _on_settings_pressed() -> void:
 
 
 func _on_quit_pressed() -> void:
-	get_tree().quit()
+	get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
 
 
 func _on_settings_property_changed(_editor: BaseOptionEditor, _new_value: Variant) -> void:
