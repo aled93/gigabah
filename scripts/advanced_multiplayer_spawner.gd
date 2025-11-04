@@ -10,9 +10,7 @@ extends Node
 const META_ADVANCED_SPAWNER: String = "advanced_spawner_node_id"
 
 var spawn_function: Callable ## must be func(data: Variant) -> Node
-@export var spawn_limit: int = 0
 @export var spawn_path: NodePath = "."
-@export var auto_spawnable_scenes: Array[PackedScene] = []
 var _watching_node: Node
 var _tracking_nodes: Dictionary[int, _NetworkNodeInfo] = { }
 
@@ -37,24 +35,6 @@ static func set_visibility_for(peer_id: int, node: Node, visibility: bool) -> Vi
 		return VisibilityError.CORRUPTED_META
 
 	return spawner._set_visibility_for(peer_id, node, visibility)
-
-
-func add_spawnable_scene(path: String) -> void:
-	auto_spawnable_scenes.append(load(path))
-
-
-func clear_spawnable_scenes() -> void:
-	auto_spawnable_scenes.clear()
-
-
-func get_spawnable_scene(index: int) -> String:
-	if index >= 0 && index < len(auto_spawnable_scenes):
-		return auto_spawnable_scenes[index].resource_path
-	return ""
-
-
-func get_spawnable_count() -> int:
-	return len(auto_spawnable_scenes)
 
 
 func spawn(data: Variant = null) -> Node:
@@ -111,7 +91,7 @@ func _set_visibility_for(peer_id: int, node: Node, visibility: bool) -> Visibili
 
 	var net_node: _NetworkNodeInfo = _tracking_nodes.get(node.get_instance_id())
 	if !net_node:
-		if !_try_get_auto_spawnable_scene(node):
+		if !_try_get_scene_path(node):
 			return VisibilityError.NOT_TRACKED_BY_THIS_SPAWNER
 
 		if visibility:
@@ -155,10 +135,6 @@ func _enter_tree() -> void:
 	if is_multiplayer_authority():
 		_watching_node = get_node_or_null(spawn_path)
 		if _watching_node:
-			for child: Node in _watching_node.get_children():
-				_on_child_entered(child)
-
-			_watching_node.child_entered_tree.connect(_on_child_entered)
 			_watching_node.child_exiting_tree.connect(_on_child_exiting)
 
 		multiplayer.peer_disconnected.connect(_on_peer_disconnected)
@@ -167,9 +143,7 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
 	if is_multiplayer_authority():
 		if _watching_node:
-			_watching_node.child_entered_tree.connect(_on_child_entered)
-			_watching_node.child_exiting_tree.connect(_on_child_exiting)
-
+			_watching_node.child_exiting_tree.disconnect(_on_child_exiting)
 			_watching_node = null
 
 		multiplayer.peer_disconnected.disconnect(_on_peer_disconnected)
@@ -183,23 +157,6 @@ func _on_peer_disconnected(peer_id: int) -> void:
 			if peer_vis_idx >= 0:
 				_erase_replacing(net_node.peers_vision, peer_vis_idx)
 	)
-
-
-func _on_child_entered(node: Node) -> void:
-	var auto_spawn_scene: PackedScene = _try_get_auto_spawnable_scene(node)
-	if !auto_spawn_scene:
-		# not replicatable node or node that should be spawned manually
-		# using spawn method
-		return
-
-	var net_node: _NetworkNodeInfo = _tracking_nodes.get(node.get_instance_id())
-	if net_node:
-		# node already tracking
-		return
-
-	net_node = _NetworkNodeInfo.new(_alloc_network_id(node))
-	_tracking_nodes[node.get_instance_id()] = net_node
-	_on_start_tracking_node(node, net_node)
 
 
 func _on_child_exiting(node: Node) -> void:
@@ -258,12 +215,8 @@ func _on_peer_lost_vision(_node: Node, net_node: _NetworkNodeInfo, peer_id: int)
 	_rpc_despawn.rpc_id(peer_id, net_node.network_id)
 
 
-func _try_get_auto_spawnable_scene(node: Node) -> PackedScene:
-	for scene: PackedScene in auto_spawnable_scenes:
-		if scene.resource_path == node.scene_file_path:
-			return scene
-
-	return null
+func _try_get_scene_path(node: Node) -> String:
+	return node.scene_file_path
 
 
 func _find_node_id_by_network_id(network_id: int) -> int:
