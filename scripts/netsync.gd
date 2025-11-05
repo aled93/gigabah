@@ -48,6 +48,13 @@ func set_visibility_for(peer_id: int, node: Node, visibility: bool) -> Visibilit
 				Utils.array_erase_replacing(net_node.peers_vision, idx)
 			_on_peer_lost_vision(net_node, peer_id)
 
+		for other_net_node: _NetworkNodeInfo in net_node.inherited_vision_nodes:
+			var need_set := visibility and peer_id not in other_net_node.peers_vision
+			need_set = need_set or (not visibility and peer_id in other_net_node.peers_vision)
+			# if here to prevent recursive call
+			if need_set:
+				set_visibility_for(peer_id, other_net_node.node, visibility)
+
 	return VisibilityError.OK
 
 
@@ -62,12 +69,38 @@ func set_visibility_batch(peer_ids: PackedInt64Array, node: Node, visibility: bo
 
 ## Copy all observing peers from `source_node` to `target_node`.
 ## All players who has network vision on source node will
-## also get vision over target node.
-func inherit_visibility(source_node: Node, target_node: Node) -> void:
+## also get vision over target node. This is one shot action.
+func inherit_visibility(source_node: Node, target_node: Node, continously: bool = false) -> void:
+	if not is_instance_valid(source_node):
+		push_error("source_node is invalid instance")
+		return
+
+	if not is_instance_valid(target_node):
+		push_error("target_node is invalid instance")
+		return
+
+	if source_node == target_node:
+		push_error("attempt to inherit vision from itself")
+		return
+
 	var net_node := _get_netnode_by_instance_id(source_node.get_instance_id())
 	if not net_node:
-		push_warning("attempt to inherit network visibility from non networked node")
-		return
+		if not continously:
+			push_warning("attempt to inherit network visibility from non networked node")
+			return
+
+		net_node = _NetworkNodeInfo.new(source_node, _alloc_network_id(source_node))
+		_register_tracking_node(net_node)
+		_on_start_tracking_node(source_node, net_node)
+
+	if continously:
+		var target_net_node := _get_netnode_by_instance_id(target_node.get_instance_id())
+		if not target_net_node:
+			target_net_node = _NetworkNodeInfo.new(target_node, _alloc_network_id(target_node))
+			_register_tracking_node(target_net_node)
+			_on_start_tracking_node(target_node, target_net_node)
+
+		net_node.inherited_vision_nodes.push_back(target_net_node)
 
 	for peer_id: int in net_node.peers_vision:
 		set_visibility_for(peer_id, target_node, true)
@@ -335,6 +368,7 @@ class _NetworkNodeInfo:
 	var peers_vision: PackedInt64Array = []
 	var synchronizers: Array[MultiplayerSynchronizer] = []
 	var debug_name: String
+	var inherited_vision_nodes: Array[_NetworkNodeInfo] = []
 
 
 	func _init(nod: Node, net_id: int) -> void:
