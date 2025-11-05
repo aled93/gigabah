@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://cabfjhgqmmx3k"]
 
-[ext_resource type="PackedScene" uid="uid://c8inhpa5wpa5t" path="res://scenes/abilities/vfx_projectile_magic.tscn" id="1_l5glv"]
+[ext_resource type="PackedScene" uid="uid://c8inhpa5wpa5t" path="res://scenes/vfx/abilities/vfx_projectile_magic.tscn" id="1_l5glv"]
 [ext_resource type="Script" uid="uid://1cdf55yjte8h" path="res://scripts/components/network_transform.gd" id="1_y25gk"]
 [ext_resource type="Script" uid="uid://7i1d2cf1nvak" path="res://scripts/components/network_projectile.gd" id="2_l5glv"]
 

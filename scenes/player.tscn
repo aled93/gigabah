@@ -15,7 +15,7 @@
 [ext_resource type="Script" uid="uid://btqg13317lydt" path="res://scripts/ui/hud/hp_sync.gd" id="10_oprun"]
 [ext_resource type="Script" uid="uid://dygq0iwvhu8ou" path="res://scripts/animations_base.gd" id="11_d2wvv"]
 [ext_resource type="Script" uid="uid://cw41hh8xohvjm" path="res://scripts/camera_controller.gd" id="15_oprun"]
-[ext_resource type="Script" uid="uid://1lurjfq8mjgm" path="res://scripts/abilities/devball.gd" id="16_a8ls1"]
+[ext_resource type="PackedScene" uid="uid://62lxqb4d60si" path="res://scenes/abilities/devball.tscn" id="16_qfm1y"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_oprun"]
 properties/0/path = NodePath("InputController:move_direction")
@@ -229,9 +229,10 @@ target_position = Vector3(6.945, 23.925, 6.02)
 debug_shape_custom_color = Color(1, 0, 0, 1)
 debug_shape_thickness = 5
 
-[node name="Hero" type="CharacterBody3D" parent="." node_paths=PackedStringArray("input_controller", "caster")]
+[node name="Hero" type="CharacterBody3D" parent="." node_paths=PackedStringArray("input_controller", "health", "caster")]
 script = ExtResource("2_jej6c")
 input_controller = NodePath("../InputController")
+health = NodePath("Components/NetworkHp")
 caster = NodePath("Caster")
 
 [node name="Components" type="Node" parent="Hero"]
@@ -295,27 +296,28 @@ shape = SubResource("CapsuleShape3D_g2els")
 [node name="PlayerModel" parent="Hero" instance=ExtResource("8_a8ls1")]
 
 [node name="Skeleton3D" parent="Hero/PlayerModel/Armature" index="0"]
-bones/0/position = Vector3(0, 0.830443, 0)
+bones/0/position = Vector3(0, 0.8369747, 0)
 bones/0/rotation = Quaternion(-2.9802326e-08, 1.1920928e-07, -2.5243543e-29, 1)
-bones/1/rotation = Quaternion(7.2960677e-09, 5.7696843e-09, -0.029773364, 0.9995568)
+bones/1/rotation = Quaternion(-3.076807e-10, -2.5169386e-10, 0.0012977301, 0.9999992)
 bones/3/rotation = Quaternion(8.882343e-16, 4.7590512e-15, 5.821475e-11, 1)
-bones/6/rotation = Quaternion(0.094737075, 0.10859017, 0.6689449, 0.729209)
-bones/7/rotation = Quaternion(-0.27414235, 1.1304595e-07, 1.7038422e-09, 0.9616891)
-bones/9/rotation = Quaternion(0.15171671, -0.17509219, -0.63652766, 0.73563397)
-bones/10/rotation = Quaternion(-0.44587898, -1.0901674e-07, 7.161592e-09, 0.8950933)
-bones/11/rotation = Quaternion(0.9969245, -1.4228652e-08, 1.3905327e-07, -0.078368016)
-bones/12/rotation = Quaternion(-0.22600144, 2.6857128e-12, -7.255707e-08, 0.974127)
-bones/13/rotation = Quaternion(0.9988282, 1.1406261e-08, 7.978543e-08, -0.04839889)
-bones/14/rotation = Quaternion(-0.13961688, 2.7426256e-12, 2.1750935e-08, 0.99020565)
-bones/15/position = Vector3(-0.11312069, 0.10186326, 0)
+bones/6/rotation = Quaternion(0.10753178, 0.11910987, 0.65859973, 0.7351845)
+bones/7/rotation = Quaternion(-0.31428295, 1.17136956e-07, -2.4214199e-08, 0.9493294)
+bones/9/rotation = Quaternion(0.08249476, -0.14019246, -0.6554795, 0.7374872)
+bones/10/rotation = Quaternion(-0.30619204, -1.1538476e-07, 2.0483592e-08, 0.95196986)
+bones/11/rotation = Quaternion(0.9999901, -8.0652984e-10, 1.3948085e-07, -0.0044421745)
+bones/12/rotation = Quaternion(-0.012819581, 2.757379e-12, -4.115687e-09, 0.9999179)
+bones/13/rotation = Quaternion(0.9999859, 1.2536934e-09, 7.9877886e-08, -0.0053196554)
+bones/14/rotation = Quaternion(-0.015354464, 2.7703191e-12, 2.392074e-09, 0.99988216)
+bones/15/position = Vector3(-0.11312069, 0.09107609, 0)
 bones/15/rotation = Quaternion(0.7071068, 5.3385087e-08, 5.3385087e-08, 0.7071068)
 bones/17/position = Vector3(1.0398227e-08, 2.0699955e-09, 6.370502e-08)
-bones/19/position = Vector3(-0.39403248, 0.76581657, 0.0056936108)
+bones/19/position = Vector3(-0.3931198, 0.75750935, 7.1162125e-05)
 bones/19/rotation = Quaternion(-0.047778815, 0.366911, 0.92703885, -0.060765684)
 bones/21/position = Vector3(5.6507947e-06, 1.570515e-05, -1.669209e-05)
+bones/23/position = Vector3(0.11312069, 0.091142274, 0)
 bones/23/rotation = Quaternion(0.7071068, -5.3385087e-08, -5.3385087e-08, 0.7071068)
 bones/25/position = Vector3(-2.9476466e-09, 2.0699944e-09, 6.3705016e-08)
-bones/27/position = Vector3(0.3921076, 0.76490843, 3.5024466e-05)
+bones/27/position = Vector3(0.39306974, 0.75769275, 1.4254928e-06)
 bones/27/rotation = Quaternion(-0.0012944937, 0.7071056, 0.7071057, -0.0012946073)
 bones/29/position = Vector3(-1.1386778e-06, -8.6467907e-07, -1.2696355e-05)
 
@@ -390,9 +392,7 @@ metadata/_custom_type_script = "uid://bxi4djnou368t"
 
 [node name="Abilities" type="Node" parent="Hero/Caster"]
 
-[node name="DevBall" type="Node" parent="Hero/Caster/Abilities"]
-script = ExtResource("16_a8ls1")
-metadata/_custom_type_script = "uid://1lurjfq8mjgm"
+[node name="DevBall" parent="Hero/Caster/Abilities" instance=ExtResource("16_qfm1y")]
 
 [node name="HitBoxArea" type="Area3D" parent="Hero" node_paths=PackedStringArray("hp")]
 collision_layer = 2

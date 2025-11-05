@@ -9,6 +9,7 @@ var cooldown: float:
 		cooldown = max(0.0, val)
 		if started:
 			cooldown_start.emit()
+			_sync_cd()
 
 ## When cooldown value changed from zero to positive value
 signal cooldown_start()
@@ -108,6 +109,24 @@ func _process(delta: float) -> void:
 	else:
 		cooldown = 0.0
 		cooldown_end.emit()
+
+
+func _sync_cd() -> void:
+	if is_multiplayer_authority():
+		var spawner_inst_id: Variant = caster.owner.get_meta(AdvancedMultiplayerSpawner.META_ADVANCED_SPAWNER)
+		if spawner_inst_id == null:
+			push_error("no advanced spawner meta for node %s" % owner)
+			return
+
+		var spawner := instance_from_id(spawner_inst_id) as AdvancedMultiplayerSpawner
+		for i: int in range(spawner.get_peers_have_vision_count(caster.owner)):
+			var peer_id := spawner.get_peer_have_vision(caster.owner, i)
+			_rpc_sync_cd.rpc_id(peer_id, cooldown)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _rpc_sync_cd(cd: float) -> void:
+	cooldown = cd
 
 
 enum CastError {

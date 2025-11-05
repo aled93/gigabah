@@ -1,0 +1,242 @@
+[gd_scene load_steps=11 format=3 uid="uid://dngglbijh1j4l"]
+
+[ext_resource type="Script" uid="uid://hnp7yijx6gqv" path="res://scripts/ui/main_menu.gd" id="1_fe2o3"]
+[ext_resource type="PackedScene" uid="uid://dma4r8ib4kp06" path="res://scenes/ui/elements/main_menu_button.tscn" id="1_sl1te"]
+[ext_resource type="PackedScene" uid="uid://bde2flq2egpcv" path="res://scenes/index.tscn" id="2_1g8jr"]
+[ext_resource type="Script" uid="uid://c6xnor3lnh3xd" path="res://scripts/ui/scale_pulse.gd" id="3_uhagc"]
+[ext_resource type="PackedScene" uid="uid://cnwuehb1ga6t2" path="res://scenes/ui/elements/icon_link_button.tscn" id="4_x2yvf"]
+[ext_resource type="Texture2D" uid="uid://b46yvmeblk2bk" path="res://assets/icons/github-mark-white.svg" id="5_uhagc"]
+[ext_resource type="Script" uid="uid://iq5odej32qrx" path="res://scripts/ui/properties_inspector.gd" id="7_btxxm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1g8jr"]
+bg_color = Color(0, 0, 0, 1)
+shadow_color = Color(0, 0, 0, 0.2509804)
+shadow_size = 10
+
+[sub_resource type="Curve" id="Curve_btxxm"]
+_limits = [0.0, 2.0, 0.0, 1.0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.25, 1.2), 0.0, 0.0, 0, 0, Vector2(0.5, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+metadata/_snap_enabled = true
+metadata/_snap_count = 20
+
+[sub_resource type="Curve" id="Curve_uhagc"]
+_limits = [0.0, 2.0, 0.0, 1.0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(0.75, 1.2), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 4
+metadata/_snap_enabled = true
+metadata/_snap_count = 20
+
+[node name="MainMenu" type="Control" node_paths=PackedStringArray("settings_property_inspector")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fe2o3")
+game_scene = ExtResource("2_1g8jr")
+settings_property_inspector = NodePath("AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer/PropertiesInspector")
+
+[node name="Background" type="ColorRect" parent="." groups=["not_ingame_only"]]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2509804, 0.2509804, 0.2509804, 1)
+
+[node name="IngameBackground" type="ColorRect" parent="." groups=["ingame_only"]]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5019608)
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+ratio = 1.7778
+stretch_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="AspectRatioContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 75
+
+[node name="PanelContainer" type="PanelContainer" parent="AspectRatioContainer/MarginContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_1g8jr")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AspectRatioContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Control" type="Control" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/Control"]
+texture_filter = 6
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_vertical = 2
+pivot_offset = Vector2(100, 37.5)
+theme_override_font_sizes/font_size = 32
+text = "Giga"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ScalePulse" type="Node" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/Control/Label"]
+script = ExtResource("3_uhagc")
+scale_curve = SubResource("Curve_btxxm")
+
+[node name="Label2" type="Label" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/Control"]
+texture_filter = 6
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+pivot_offset = Vector2(0, 37.5)
+theme_override_font_sizes/font_size = 32
+text = "bah"
+vertical_alignment = 1
+
+[node name="ScalePulse" type="Node" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/Control/Label2"]
+script = ExtResource("3_uhagc")
+scale_curve = SubResource("Curve_uhagc")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="ButtonEnterGame" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer" groups=["not_ingame_only"] instance=ExtResource("1_sl1te")]
+layout_mode = 2
+text = "main_menu_enter_game"
+
+[node name="ButtonHideMenu" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer" groups=["ingame_only"] instance=ExtResource("1_sl1te")]
+layout_mode = 2
+text = "main_menu_hide_menu"
+
+[node name="ButtonSettings" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer" instance=ExtResource("1_sl1te")]
+layout_mode = 2
+text = "main_menu_settings"
+
+[node name="ButtonQuit" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer" instance=ExtResource("1_sl1te")]
+layout_mode = 2
+text = "main_menu_quit"
+
+[node name="MarginContainer" type="MarginContainer" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 10
+
+[node name="TelegramChannel" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer" instance=ExtResource("4_x2yvf")]
+layout_mode = 2
+tooltip_text = "main_menu_telegram_link_tooltip"
+
+[node name="GithubRepo" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer" instance=ExtResource("4_x2yvf")]
+layout_mode = 2
+tooltip_text = "main_menu_github_repo_link_tooltip"
+uri = "https://github.com/rodd-oss/gigabah"
+
+[node name="TextureRect" parent="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer/GithubRepo" index="0"]
+texture = ExtResource("5_uhagc")
+
+[node name="SettingsPanel" type="MarginContainer" parent="AspectRatioContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+mouse_filter = 2
+theme_override_constants/margin_left = 400
+
+[node name="PanelContainer" type="PanelContainer" parent="AspectRatioContainer/SettingsPanel"]
+custom_minimum_size = Vector2(1000, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1g8jr")
+
+[node name="MarginContainer" type="MarginContainer" parent="AspectRatioContainer/SettingsPanel/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "settings_menu_title"
+horizontal_alignment = 1
+
+[node name="PropertiesInspector" type="Node" parent="AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer" node_paths=PackedStringArray("properties_container")]
+script = ExtResource("7_btxxm")
+properties_container = NodePath("../ScrollContainer/MarginContainer/VBoxContainer/SettingsPropertiesContainer")
+property_name_prefix = "settings_menu_property_"
+metadata/_custom_type_script = "uid://iq5odej32qrx"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="SettingsPropertiesContainer" type="VBoxContainer" parent="AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SaveButton" type="Button" parent="AspectRatioContainer/SettingsPanel/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "settings_menu_save_button"
+
+[connection signal="pressed" from="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer/ButtonEnterGame" to="." method="_on_enter_game_pressed"]
+[connection signal="pressed" from="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer/ButtonHideMenu" to="." method="_on_hide_menu_pressed"]
+[connection signal="pressed" from="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer/ButtonSettings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/CenterContainer/VBoxContainer/VBoxContainer/ButtonQuit" to="." method="_on_quit_pressed"]
+
+[editable path="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer/TelegramChannel"]
+[editable path="AspectRatioContainer/MarginContainer/PanelContainer/VBoxContainer/MarginContainer/HBoxContainer/GithubRepo"]

@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://cnwuehb1ga6t2"]
+
+[ext_resource type="Texture2D" uid="uid://by50fvpkivtw6" path="res://assets/icons/telegram-logo.svg" id="1_7shdg"]
+
+[node name="LinkButton" type="LinkButton"]
+custom_minimum_size = Vector2(32, 32)
+uri = "https://t.me/milanrodd"
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_7shdg")
+expand_mode = 2
+stretch_mode = 4

@@ -5,6 +5,7 @@ extends CharacterBody3D
 @export var JUMP_VELOCITY: float = 4.5
 
 @export var input_controller: InputController
+@export var health: NetworkHP
 @export var caster: Caster
 
 signal jumped()
@@ -18,6 +19,14 @@ var _prev_is_on_floor := false
 
 func _ready() -> void:
 	_local_peer = owner.name.to_int() == multiplayer.get_unique_id()
+
+	if _local_peer and HeroHUD.instance:
+		HeroHUD.instance.hero = self
+
+
+func _exit_tree() -> void:
+	if _local_peer and HeroHUD.instance and HeroHUD.instance.hero == self:
+		HeroHUD.instance.hero = null
 
 
 func _physics_process(delta: float) -> void:
