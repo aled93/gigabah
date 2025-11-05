@@ -67,17 +67,7 @@ func _on_caster_start_casting(_ability: Ability) -> void:
 ## intended to use to request one shot animations because NetworkSynchronizer
 ## can skip window when `*/request` is set and before it unsets by tree
 func _set_tree_param(param: StringName, value: Variant) -> void:
-	var spawner_inst_id: Variant = owner.get_meta(AdvancedMultiplayerSpawner.META_ADVANCED_SPAWNER)
-	if spawner_inst_id == null:
-		push_error("no advanced spawner meta for node %s" % owner)
-		return
-
-	# TODO: little hack until issue #92 will be fixed
-	#       https://github.com/rodd-oss/gigabah/issues/92
-	var spawner := instance_from_id(spawner_inst_id) as AdvancedMultiplayerSpawner
-	for i: int in range(spawner.get_peers_have_vision_count(owner)):
-		var peer_id := spawner.get_peer_have_vision(owner, i)
-		_rpc_set_tree_param.rpc_id(peer_id, param, value)
+	NetSync.rpc_to_observing_peers(owner, _rpc_set_tree_param, [param, value])
 
 
 @rpc("authority", "reliable", "call_local")
