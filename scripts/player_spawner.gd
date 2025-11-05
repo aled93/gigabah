@@ -1,6 +1,7 @@
 class_name PlayerSpawner
-extends AdvancedMultiplayerSpawner
+extends Node
 
+@export var spawn_path: NodePath
 @export var player_scene: PackedScene
 
 
@@ -21,13 +22,13 @@ func spawn_player(id: int) -> void:
 	hero.position.x = randf_range(-5, 5)
 	hero.position.y = 0
 	hero.position.z = randf_range(-10, 0)
-	get_node(spawn_path).call_deferred("add_child", player)
+	get_node(spawn_path).add_child(player)
 
 	var hp := hero.find_child("NetworkHp", true) as NetworkHP
 	if hp:
 		hp.health_depleted.connect(respawn_client.bind(player as NetworkClient))
 
-	set_visibility_for(id, player, true)
+	NetSync.set_visibility_for(id, player, true)
 
 
 func despawn_player(id: int) -> void:
