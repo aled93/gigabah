@@ -52,6 +52,6 @@ func _try_set_vision_for(node: Node, vision: bool) -> void:
 		return
 
 	if node.owner:
-		AdvancedMultiplayerSpawner.set_visibility_for(vision_owner_peer_id, node.owner, vision)
+		NetSync.set_visibility_for(vision_owner_peer_id, node.owner, vision)
 	elif not node.scene_file_path.is_empty():
-		AdvancedMultiplayerSpawner.set_visibility_for(vision_owner_peer_id, node, vision)
+		NetSync.set_visibility_for(vision_owner_peer_id, node, vision)
