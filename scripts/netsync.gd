@@ -152,7 +152,7 @@ func get_all_peers_have_vision(node: Node) -> PackedInt64Array:
 ## Only server can do this because only server knows who observes node.
 func rpc_to_observing_peers(observable_node: Node, rpc_func: Callable, rpc_args: Array) -> void:
 	if not multiplayer.is_server():
-		push_error("attempt to broadcast rpc to observable peers on client")
+		assert(false, "attempt to broadcast rpc to observable peers on client")
 		return
 
 	var net_node := _get_netnode_by_instance_id(observable_node.get_instance_id())

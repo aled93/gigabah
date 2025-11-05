@@ -2,7 +2,7 @@ class_name DevBall
 extends Ability
 
 var devball_scene := preload("res://scenes/bullet.tscn")
-var impact_scene := preload("res://scenes/abilities/vfx_impact.tscn")
+var impact_scene := preload("res://scenes/vfx/abilities/vfx_impact.tscn")
 
 
 func _get_cast_method() -> CastMethod:

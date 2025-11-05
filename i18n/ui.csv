@@ -1,0 +1,33 @@
+key,ru
+main_menu_enter_game,Войти в игру
+main_menu_settings,Настройки
+main_menu_quit,Выход
+main_menu_telegram_link_tooltip,Группа в Телеграме
+main_menu_github_repo_link_tooltip,Репозиторий игры на github.com
+main_menu_hide_menu,Продолжить играть
+
+settings_menu_title,Настройки
+settings_menu_save_button,Сохранить
+settings_menu_property_user,Игрок
+settings_menu_property_user_display_name,Отображаемое имя
+settings_menu_property_keybindings,Привязки клавиш
+
+duration_short_milliseconds,%.1f
+duration_short_seconds,%.0fс
+duration_short_minutes,%.1fм
+duration_short_hours,%.1fч
+duration_short_days,%.1fд
+duration_short_weeks,%.1fн
+duration_short_months,%.1fмес
+duration_short_years,%.1fг
+
+duration_milliseconds,%.0f миллисекунд
+duration_seconds,%.0f секунд
+duration_minutes,%.1f минут
+duration_hours,%.1f час(ов)
+duration_days,%.1f дней
+duration_weeks,%.1f недель
+duration_months,%.1f месяцев
+duration_years,%.1f лет
+
+time_diff_ago,%s назад

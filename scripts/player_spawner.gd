@@ -3,6 +3,9 @@ extends Node
 
 @export var spawn_path: NodePath
 @export var player_scene: PackedScene
+@export var default_abilities: Array[PackedScene] = [
+	preload("res://scenes/abilities/devball.tscn"),
+]
 
 
 # Called when the node enters the scene tree for the first time.
@@ -27,6 +30,12 @@ func spawn_player(id: int) -> void:
 	var hp := hero.find_child("NetworkHp", true) as NetworkHP
 	if hp:
 		hp.health_depleted.connect(respawn_client.bind(player as NetworkClient))
+
+	var caster := (hero as Hero).caster
+	for ability_scene: PackedScene in default_abilities:
+		var ability := ability_scene.instantiate()
+		caster.get_node(caster.abilities_container).add_child(ability)
+		caster.add_ability(ability)
 
 	NetSync.set_visibility_for(id, player, true)
 

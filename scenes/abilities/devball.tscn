@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://62lxqb4d60si"]
+
+[ext_resource type="Script" uid="uid://1lurjfq8mjgm" path="res://scripts/abilities/devball.gd" id="1_hsc11"]
+
+[node name="DevBall" type="PanelContainer"]
+script = ExtResource("1_hsc11")

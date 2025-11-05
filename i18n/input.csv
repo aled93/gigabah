@@ -1,0 +1,34 @@
+key,ru
+input_event_none,—
+input_event_mouse_button1,ЛКМ
+input_event_mouse_button2,ПКМ
+input_event_mouse_button3,СКМ
+input_event_mouse_button4,Колёсико мыши вверх
+input_event_mouse_button5,Колёсико мыши вниз
+input_event_mouse_button8,Боковая кнопка мыши 1
+input_event_mouse_button9,Боковая кнопка мыши 2
+input_event_gamepad_left_stick_x,Левый сосок влево\вправо
+input_event_gamepad_left_stick_x_negative,Левый сосок налево
+input_event_gamepad_left_stick_x_positive,Левый сосок вправо
+input_event_gamepad_left_stick_y,Левый сосок вверх\вниз
+input_event_gamepad_left_stick_y_negative,Левый сосок вверх
+input_event_gamepad_left_stick_y_positive,Левый сосок вниз
+input_event_gamepad_right_stick_x,Правый сосок влево\вправо
+input_event_gamepad_right_stick_x_negative,Правый сосок налево
+input_event_gamepad_right_stick_x_positive,Правый сосок вправо
+input_event_gamepad_right_stick_y,Правый сосок вверх\вниз
+input_event_gamepad_right_stick_y_negative,Правый сосок вверх
+input_event_gamepad_right_stick_y_positive,Правый сосок вниз
+input_event_gamepad_left_trigger,Левый курок
+input_event_gamepad_right_trigger,Левый курок
+input_action_move_forward,Идти вперёд
+input_action_move_backward,Идти назад
+input_action_move_left,Идти влево
+input_action_move_right,Идти вправо
+input_action_cast_1,Использовать способность 1
+input_action_cast_2,Использовать способность 2
+input_action_cast_3,Использовать способность 3
+input_action_cast_4,Использовать способность 4
+input_action_mouse_camera_rotation,Зажать для вращения камеры
+input_action_rotation_cw,Вращать камеру по часовой стрелке
+input_action_rotation_ccw,Вращать камеру против часовой стрелке

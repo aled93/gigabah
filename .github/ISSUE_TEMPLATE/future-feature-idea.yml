@@ -1,0 +1,42 @@
+name: "Предложение новой функции"
+description: "Предложите идею для улучшения проекта"
+title: "[FEATURE-IDEA]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Спасибо за вашу идею! Чтобы мы могли её рассмотреть, пожалуйста, заполните информацию ниже.
+
+  - type: textarea
+    id: feature
+    attributes:
+      label: "Новая функция"
+      description: "Функция, которую стоит реализовать"
+      placeholder: "Например: реализовать возможность сплитскрина, чтобы играть вдовем за одним компьютером"
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "Предлагаемое решение"
+      description: "Опишите, как должна работать новая функция"
+      placeholder: "Распишите как вы видите, должна работать эта функция и/или как она должна быть реализована"
+
+  - type: textarea
+    id: context
+    attributes:
+      label: "Дополнительный контекст"
+      description: "Ссылки, скриншоты, примеры из других проектов"
+      placeholder: "https://youtube.com/, etc"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: help
+    attributes:
+      label: "Помощь"
+      description: "Готовы ли вы помочь с реализацией?"
+      options:
+        - label: "Я готов(а) помочь с реализацией (опционально)"

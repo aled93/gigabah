@@ -37,6 +37,7 @@ func add_ability(ability: Ability) -> CasterError:
 	ability.caster = self
 
 	ability_added.emit(_abilities.size() - 1)
+	NetSync.inherit_visibility(owner, ability, true)
 
 	return CasterError.OK
 
@@ -65,6 +66,8 @@ func _ready() -> void:
 			if err:
 				push_error("failed adding ability: %s" % CasterError.keys()[err])
 
+		_container_node.child_entered_tree.connect(_on_ability_container_child_entered)
+
 
 func _cast_started(ability: Ability) -> void:
 	start_casting.emit(ability)
@@ -72,6 +75,14 @@ func _cast_started(ability: Ability) -> void:
 
 func _cast_done(ability: Ability) -> void:
 	successfully_casted.emit(ability)
+
+
+func _on_ability_container_child_entered(node: Node) -> void:
+	if node is not Ability:
+		return
+
+	var ability := node as Ability
+	add_ability(ability)
 
 
 enum CasterError {

@@ -9,6 +9,7 @@ var cooldown: float:
 		cooldown = max(0.0, val)
 		if started:
 			cooldown_start.emit()
+			_sync_cd()
 
 ## When cooldown value changed from zero to positive value
 signal cooldown_start()
@@ -108,6 +109,16 @@ func _process(delta: float) -> void:
 	else:
 		cooldown = 0.0
 		cooldown_end.emit()
+
+
+func _sync_cd() -> void:
+	if is_multiplayer_authority():
+		NetSync.rpc_to_observing_peers(self, _rpc_sync_cd, [cooldown])
+
+
+@rpc("authority", "call_remote", "reliable")
+func _rpc_sync_cd(cd: float) -> void:
+	cooldown = cd
 
 
 enum CastError {
