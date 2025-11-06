@@ -1,12 +1,12 @@
 class_name Hero
 extends CharacterBody3D
 
-@export var SPEED: float = 5.0
 @export var JUMP_VELOCITY: float = 4.5
 
 @export var input_controller: InputController
 @export var health: NetworkHP
 @export var caster: Caster
+@export var modifiers: Modifiers
 
 signal jumped()
 signal landed()
@@ -15,6 +15,12 @@ var _local_peer := true
 var _prev_cast_mask := 0
 var _prev_jump := false
 var _prev_is_on_floor := false
+
+@onready var _prop_move_speed := modifiers.get_property(&"move_speed")
+@onready var _prop_turn_rate := modifiers.get_property(&"turn_rate")
+@onready var _prop_cant_move := modifiers.get_property(&"cant_move")
+@onready var _prop_cant_turn := modifiers.get_property(&"cant_turn")
+@onready var _prop_cant_cast := modifiers.get_property(&"cant_cast")
 
 
 func _ready() -> void:
@@ -36,7 +42,7 @@ func _physics_process(delta: float) -> void:
 
 		# Add the gravity.
 		if is_on_floor():
-			if input_controller.jump_input and not _prev_jump:
+			if input_controller.jump_input and not _prev_jump and not _prop_cant_move.final_value:
 				velocity.y = JUMP_VELOCITY
 				jumped.emit()
 
@@ -44,8 +50,11 @@ func _physics_process(delta: float) -> void:
 		else:
 			velocity += get_gravity() * delta
 
-		velocity.x = input_controller.move_direction.x * SPEED
-		velocity.z = input_controller.move_direction.y * SPEED
+		if _prop_cant_move.final_value:
+			velocity = Vector3.ZERO
+		else:
+			velocity.x = input_controller.move_direction.x * _prop_move_speed.final_value
+			velocity.z = input_controller.move_direction.y * _prop_move_speed.final_value
 
 		_prev_is_on_floor = is_on_floor()
 		move_and_slide()

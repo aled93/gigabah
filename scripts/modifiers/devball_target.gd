@@ -1,0 +1,8 @@
+class_name DevballTargetModifier
+extends Modifier
+
+func _ready() -> void:
+	modify_property(&"move_speed", -0.75, Modifier.ModifyKind.MULTIPLY)
+
+	expire_time = 2.0
+	destroy_on_expire = true

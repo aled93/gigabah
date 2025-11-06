@@ -1,0 +1,138 @@
+class_name Modifiers
+extends Node
+
+@export var modifiers_container: NodePath = ^"."
+@export var modifiable_properties: ModifiablesMap
+
+@onready var _modifiers_container: Node = get_node(modifiers_container)
+var _modifiers: Array[Modifier] = []
+var _properties: Dictionary[StringName, Property] = { }
+var _to_recalc: Array[StringName] = []
+
+
+func add_modifier(modifier: Modifier) -> void:
+	if not is_instance_valid(modifier):
+		push_error("attempt to add modifier, but node instance is invalid")
+		return
+
+	if not modifier.is_inside_tree():
+		_modifiers_container.add_child(modifier)
+		return
+
+	if modifier in _modifiers:
+		return
+
+	# add all modifier's already existing property modifications
+	for prop_name: StringName in modifier._modified_properties.keys():
+		var prop := _get_or_create_prop(prop_name)
+		var mod := modifier._modified_properties[prop_name]
+		prop._mods.append(mod)
+		_recalc_property(prop_name)
+
+	modifier.property_mod_changed.connect(_on_modifier_property_mod_changed)
+
+	_modifiers.append(modifier)
+
+
+func remove_modifier(modifier: Modifier) -> void:
+	if not is_instance_valid(modifier):
+		push_error("attempt to remove modifier, but node isntance is invalid")
+		return
+
+	if modifier not in _modifiers:
+		push_error("attempt to remove foreign modifier")
+		return
+
+	if modifier.get_parent() == _modifiers_container and not modifier.is_queued_for_deletion():
+		modifier.queue_free()
+		return
+
+	# remove all property modifications from property._mods
+	for prop_name: StringName in modifier._modified_properties.keys():
+		var prop := _properties[prop_name]
+		var mod := modifier._modified_properties[prop_name]
+		prop._mods.erase(mod)
+		_recalc_property(prop_name)
+
+	modifier.property_mod_changed.disconnect(_on_modifier_property_mod_changed)
+
+	Utils.array_erase_replacing(_modifiers, _modifiers.find(modifier))
+
+
+func get_property(property_name: StringName) -> Property:
+	assert(property_name in modifiable_properties.properties, "attempt to get unknown property '%s'" % property_name)
+	return _get_or_create_prop(property_name)
+
+
+func _get_or_create_prop(prop_name: StringName) -> Property:
+	var prop := _properties.get(prop_name) as Property
+	if not prop:
+		prop = Property.new()
+		_properties[prop_name] = prop
+	return prop
+
+
+func _ready() -> void:
+	if not is_instance_valid(_modifiers_container):
+		push_error("modifiers_container pointing to invalid node")
+	else:
+		for i: int in range(_modifiers_container.get_child_count()):
+			var child := _modifiers_container.get_child(i)
+			if child is not Modifier:
+				continue
+
+			var modifier := child as Modifier
+			add_modifier(modifier)
+
+		_modifiers_container.child_entered_tree.connect(_on_modifiers_container_child_entered)
+		_modifiers_container.child_exiting_tree.connect(_on_modifiers_container_child_exiting)
+
+
+func _process(_delta: float) -> void:
+	call_deferred(&"_recalc_properties")
+
+
+func _recalc_properties() -> void:
+	for prop_name: StringName in _to_recalc:
+		_recalc_property(prop_name)
+
+	_to_recalc.clear()
+
+
+func _recalc_property(prop_name: StringName) -> void:
+	var prop := _properties[prop_name]
+	var prop_scheme: ModifiableProperty = modifiable_properties.properties.get(prop_name)
+
+	assert(prop_scheme, "attempt to modify unknown modifiable property '%s'" % prop_name)
+
+	prop.final_value = prop_scheme.calculate_value(prop._mods)
+
+
+func _on_modifiers_container_child_entered(node: Node) -> void:
+	if node is not Modifier:
+		return
+
+	add_modifier(node as Modifier)
+
+
+func _on_modifiers_container_child_exiting(node: Node) -> void:
+	if node is not Modifier:
+		return
+
+	remove_modifier(node as Modifier)
+
+
+func _on_modifier_property_mod_changed(prop_name: StringName, mod: Modifier.PropertyMod, modifier: Modifier) -> void:
+	push_warning("modifier '%s' changed property '%s' mod" % [modifier.get_script().get_global_name(), prop_name])
+	var prop: Property = _get_or_create_prop(prop_name)
+
+	if mod not in prop._mods:
+		prop._mods.append(mod)
+
+	if prop_name not in _to_recalc:
+		_to_recalc.append(prop_name)
+
+
+class Property:
+	var final_value: Variant
+	var _mods: Array[Modifier.PropertyMod] = []

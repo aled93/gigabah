@@ -39,6 +39,7 @@ func _cast() -> CastResult:
 
 func _on_projectile_entered_hitbox(hitbox: HitBox3D, proj: Node3D) -> void:
 	hitbox.hp.take_damage(5)
+	hitbox.hero.modifiers.add_modifier(DevballTargetModifier.new())
 	proj.queue_free()
 
 
