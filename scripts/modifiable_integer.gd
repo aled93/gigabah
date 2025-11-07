@@ -17,7 +17,7 @@ func get_default_value() -> Variant:
 
 func calculate_value(mods: Array[Modifier.PropertyMod]) -> Variant:
 	var pre_add := 0
-	var multiplier := 1
+	var multiplier := 1.0
 	var post_add := 0
 
 	for mod: Modifier.PropertyMod in mods:
@@ -25,11 +25,11 @@ func calculate_value(mods: Array[Modifier.PropertyMod]) -> Variant:
 			Modifier.ModifyKind.PRE_ADDITIVE:
 				pre_add += mod.amount
 			Modifier.ModifyKind.MULTIPLY:
-				multiplier += mod.amount
+				multiplier *= 1.0 + mod.amount / 100.0
 			Modifier.ModifyKind.POST_ADDITIVE:
 				post_add += mod.amount
 
-	var result := pre_add * multiplier + post_add
+	var result := int(pre_add * multiplier + post_add)
 	if has_min:
 		result = maxi(result, min_value)
 	if has_max:

@@ -23,7 +23,7 @@ func calculate_value(mods: Array[Modifier.PropertyMod]) -> Variant:
 			Modifier.ModifyKind.PRE_ADDITIVE:
 				pre_add += mod.amount
 			Modifier.ModifyKind.MULTIPLY:
-				multiplier += mod.amount
+				multiplier *= 1.0 + mod.amount
 			Modifier.ModifyKind.POST_ADDITIVE:
 				post_add += mod.amount
 
