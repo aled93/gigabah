@@ -4,6 +4,9 @@ extends Node
 @export var modifiers_container: NodePath = ^"."
 @export var modifiable_properties: ModifiablesMap
 
+signal modifier_added(modifier: Modifier)
+signal modifier_removing(modifier: Modifier)
+
 @onready var _modifiers_container: Node = get_node(modifiers_container)
 var _modifiers: Array[Modifier] = []
 var _properties: Dictionary[StringName, Property] = { }
@@ -29,9 +32,14 @@ func add_modifier(modifier: Modifier) -> void:
 		prop._mods.append(mod)
 		_recalc_property(prop_name)
 
+	modifier.name = modifier.to_string()
 	modifier.property_mod_changed.connect(_on_modifier_property_mod_changed)
 
 	_modifiers.append(modifier)
+
+	NetSync.inherit_visibility(owner, modifier, true)
+
+	modifier_added.emit(modifier)
 
 
 func remove_modifier(modifier: Modifier) -> void:
@@ -56,12 +64,25 @@ func remove_modifier(modifier: Modifier) -> void:
 
 	modifier.property_mod_changed.disconnect(_on_modifier_property_mod_changed)
 
+	modifier_removing.emit(modifier)
+
 	Utils.array_erase_replacing(_modifiers, _modifiers.find(modifier))
 
 
 func get_property(property_name: StringName) -> Property:
 	assert(property_name in modifiable_properties.properties, "attempt to get unknown property '%s'" % property_name)
 	return _get_or_create_prop(property_name)
+
+
+func get_modifiers_count() -> int:
+	return _modifiers.size()
+
+
+func get_modifier(index: int) -> Modifier:
+	if index >= 0 and index < _modifiers.size():
+		return _modifiers[index]
+	else:
+		return null
 
 
 func _get_or_create_prop(prop_name: StringName) -> Property:
@@ -122,8 +143,7 @@ func _on_modifiers_container_child_exiting(node: Node) -> void:
 	remove_modifier(node as Modifier)
 
 
-func _on_modifier_property_mod_changed(prop_name: StringName, mod: Modifier.PropertyMod, modifier: Modifier) -> void:
-	push_warning("modifier '%s' changed property '%s' mod" % [modifier.get_script().get_global_name(), prop_name])
+func _on_modifier_property_mod_changed(prop_name: StringName, mod: Modifier.PropertyMod, _modifier: Modifier) -> void:
 	var prop: Property = _get_or_create_prop(prop_name)
 
 	if mod not in prop._mods:

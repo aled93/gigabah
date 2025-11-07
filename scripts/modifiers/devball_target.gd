@@ -6,3 +6,5 @@ func _ready() -> void:
 
 	expire_time = 2.0
 	destroy_on_expire = true
+
+	icon_path = "res://assets/textures/ui/ability_icons/DevBall.png"
