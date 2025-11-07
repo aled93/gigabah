@@ -29,7 +29,8 @@ func set_visibility_for(peer_id: int, node: Node, visibility: bool) -> Visibilit
 
 	var net_node := _get_netnode_by_instance_id(node.get_instance_id())
 	if !net_node:
-		if node.scene_file_path.is_empty():
+		if node.scene_file_path.is_empty() and node.get_child_count() > 0:
+			push_error("node to be networked must be instance of scene or be childless")
 			return VisibilityError.ONLY_INSTANTIATED_NODES_SUPPORTED
 
 		if visibility:
@@ -274,8 +275,15 @@ func _on_peer_got_vision(node: Node, net_node: _NetworkNodeInfo, peer_id: int) -
 			if node2d:
 				pos = Vector3(node2d.global_position.x, node2d.global_position.y, 0)
 
+	var node_source := node.scene_file_path
+	if node_source.is_empty():
+		var script := node.get_script() as Script
+		if script:
+			node_source = "%s|%s" % [node.get_class(), script.resource_path]
+		else:
+			node_source = node.get_class()
 	var spawn_path := node.get_path()
-	_rpc_spawn.rpc_id(peer_id, node.scene_file_path, spawn_path, pos, net_node.network_id, null)
+	_rpc_spawn.rpc_id(peer_id, node_source, spawn_path, pos, net_node.network_id, null)
 
 
 ## called only on owner side
@@ -308,7 +316,7 @@ func _release_network_id(_network_id: int) -> void:
 
 
 @rpc("reliable")
-func _rpc_spawn(scene_path: String, spawn_path: NodePath, pos: Vector3, network_id: int, data: Variant = null) -> void:
+func _rpc_spawn(node_source: String, spawn_path: NodePath, pos: Vector3, network_id: int, data: Variant = null) -> void:
 	var last_name_idx := spawn_path.get_name_count() - 1
 	var spawn_target_path := spawn_path.slice(0, last_name_idx)
 	var spawn_name := spawn_path.get_name(last_name_idx)
@@ -324,10 +332,19 @@ func _rpc_spawn(scene_path: String, spawn_path: NodePath, pos: Vector3, network_
 
 	var node: Node
 	if data != null:
-		node = MultiplayerCustomSpawn.try_custom_spawn(spawn_target, scene_path, data)
+		node = MultiplayerCustomSpawn.try_custom_spawn(spawn_target, node_source, data)
 		push_error("got rpc spawn with custom data, but failed to find and call custom_function in spawn target")
 	if not is_instance_valid(node):
-		node = (load(scene_path) as PackedScene).instantiate()
+		if node_source.get_extension().to_lower() == "tscn":
+			# node_source is path to scene resource
+			node = (load(node_source) as PackedScene).instantiate()
+		else:
+			# node_source is class name and path to gd script
+			var splits := node_source.split("|", true, 1)
+			var class_nam := splits[0]
+			var script_path := splits[1]
+			node = ClassDB.instantiate(class_nam)
+			node.set_script(load(script_path) as Script)
 
 	node.name = spawn_name
 
