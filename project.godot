@@ -130,7 +130,7 @@ toggle_in_game_menu={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://i18n/ui.ru.translation", "res://i18n/input.ru.translation")
+locale/translations=PackedStringArray("res://i18n/ui.ru.translation", "res://i18n/input.ru.translation", "res://i18n/abilities.ru.translation")
 
 [layer_names]
 
