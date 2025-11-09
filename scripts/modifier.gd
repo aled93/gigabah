@@ -7,7 +7,7 @@ var carrier: Hero:
 		assert(not carrier, "you can't just change modifier carrier, you need to create new modifier for the new carrier")
 		carrier = val
 
-var icon_path: String:
+var icon_path: String = "res://assets/textures/ui/modifier_icons/%s.png" % get_script().get_global_name():
 	set(val):
 		if val != icon_path:
 			icon_path = val
