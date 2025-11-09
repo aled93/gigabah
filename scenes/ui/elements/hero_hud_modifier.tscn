@@ -48,7 +48,14 @@ stretch_mode = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="AspectRatioContainer"]
 layout_mode = 2
+mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_ho8f7")
+
+[node name="Background" type="ColorRect" parent="AspectRatioContainer/PanelContainer"]
+show_behind_parent = true
+layout_mode = 2
+mouse_filter = 1
+color = Color(0.18717614, 0.18717614, 0.18717614, 1)
 
 [node name="ModifierIcon" type="TextureRect" parent="AspectRatioContainer/PanelContainer"]
 unique_name_in_owner = true

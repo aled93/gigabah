@@ -1,12 +1,12 @@
 class_name HUDModifier
-extends Node
+extends Control
 
 @export var modifier: Modifier:
 	set(val):
 		modifier = val
-		_set_icon_texture()
 		_link_modifier()
 		_update_visual()
+		call_deferred(&"_set_icon_texture")
 
 @onready var modifier_icon: TextureRect = %ModifierIcon
 @onready var expire_bar: TextureProgressBar = %ExpireBar
@@ -51,3 +51,18 @@ func _update_visual() -> void:
 
 func _process(_delta: float) -> void:
 	_update_visual()
+
+
+func _make_custom_tooltip(_for_text: String) -> Object:
+	var tooltip := Label.new()
+
+	var text := "modifier_%s" % modifier.get_script().get_global_name()
+	tooltip.text = text
+
+	tooltip.set_script(TooltipPosition)
+	var tooltip_position := tooltip as Node as TooltipPosition
+	tooltip_position.source_control = self
+	tooltip_position.tooltip_side = SIDE_TOP
+	tooltip_position.spacing = 5
+
+	return tooltip
