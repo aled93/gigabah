@@ -24,6 +24,8 @@ func _ready() -> void:
 
 	expire_time = duration
 
+	icon_path = "res://assets/textures/ui/ability_icons/Jump.png"
+
 
 func _physics_process(delta: float) -> void:
 	if not multiplayer.is_server():
