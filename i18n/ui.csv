@@ -11,6 +11,7 @@ settings_menu_save_button,Сохранить
 settings_menu_property_user,Игрок
 settings_menu_property_user_display_name,Отображаемое имя
 settings_menu_property_keybindings,Привязки клавиш
+settings_menu_property_audio,Звук
 
 duration_short_milliseconds,%.1f
 duration_short_seconds,%.0fс
@@ -31,3 +32,7 @@ duration_months,%.1f месяцев
 duration_years,%.1f лет
 
 time_diff_ago,%s назад
+
+audio_bus_Master,Мастер
+audio_bus_voice,Голос
+audio_bus_sfx,Эффекты
