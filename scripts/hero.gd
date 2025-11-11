@@ -71,7 +71,7 @@ func _process(_delta: float) -> void:
 				continue
 
 			var ability := caster.get_ability(cast_slot_idx)
-			if ability:
+			if ability and not _prop_cant_cast.final_value:
 				_cast_ability(ability)
 
 
