@@ -1,9 +1,6 @@
 class_name Jump
 extends Ability
 
-var ground_impact_scene := preload("res://scenes/vfx/abilities/vfx_ground_impact.tscn")
-
-
 func _get_cast_method() -> CastMethod:
 	return Ability.CastMethod.POINT
 

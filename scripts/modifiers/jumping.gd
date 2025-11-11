@@ -1,6 +1,8 @@
 class_name JumpingModifier
 extends Modifier
 
+var ground_impact_scene := preload("res://scenes/vfx/abilities/vfx_ground_impact.tscn")
+
 var land_point: Vector3
 var jump_height: float = 3.0
 var duration: float = 1.0
@@ -24,9 +26,17 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if not multiplayer.is_server():
+		return
+
 	if _t + delta < 1.0:
 		_t += delta
 		carrier.global_position = Utils.quadratic_bezier_3d(_p0, _p1, _p2, _t)
 	else:
 		carrier.global_position = land_point
 		queue_free()
+
+		var impact := ground_impact_scene.instantiate() as Node3D
+		carrier.get_parent().add_child(impact)
+		impact.global_position = carrier.global_position
+		NetSync.inherit_visibility(carrier.owner, impact)
