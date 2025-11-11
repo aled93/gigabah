@@ -2,6 +2,8 @@
 class_name Ability
 extends Node
 
+const ICON_PATH_PATTERN = "res://assets/textures/ui/ability_icons/%s.png"
+
 var caster: Caster
 var cooldown: float:
 	set(val):
@@ -10,6 +12,11 @@ var cooldown: float:
 		if started:
 			cooldown_start.emit()
 			_sync_cd()
+var icon_path: String = ICON_PATH_PATTERN % get_script().get_global_name():
+	set(val):
+		if val != icon_path:
+			icon_path = val
+			icon_path_changed.emit()
 
 ## Point in global space where caster pointing his cursor. Can be all NANs
 ## if cursor pointing not terrain or in UI
@@ -27,6 +34,7 @@ signal cooldown_end()
 signal start_casting()
 ## Emits after calling ability's _cast and it returned no error
 signal succesfully_casted()
+signal icon_path_changed()
 
 
 ## How this ability can be casted. Currently game expects that
