@@ -127,4 +127,5 @@ enum CastMethod {
 	NO_TARGET,
 	TARGETED,
 	DIRECTIONAL,
+	POINT,
 }
