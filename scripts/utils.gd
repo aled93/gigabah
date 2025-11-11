@@ -82,3 +82,7 @@ static func array_erase_replacing(array: Variant, index: int) -> void:
 	if index < last_idx:
 		array[index] = array[last_idx]
 	array.resize(last_idx)
+
+
+static func quadratic_bezier_3d(p0: Vector3, p1: Vector3, p2: Vector3, t: float) -> Vector3:
+	return p0.lerp(p1, t).lerp(p2, t)
