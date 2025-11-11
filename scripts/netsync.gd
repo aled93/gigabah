@@ -330,21 +330,22 @@ func _rpc_spawn(node_source: String, spawn_path: NodePath, pos: Vector3, network
 		push_error("authority sent rpc to spawn node with name that already occupied in spawn_path by %s" % existing_node)
 		return
 
-	var node: Node
-	if data != null:
-		node = MultiplayerCustomSpawn.try_custom_spawn(spawn_target, node_source, data)
-		push_error("got rpc spawn with custom data, but failed to find and call custom_function in spawn target")
-	if not is_instance_valid(node):
+	var create_node := func() -> Node:
 		if node_source.get_extension().to_lower() == "tscn":
 			# node_source is path to scene resource
-			node = (load(node_source) as PackedScene).instantiate()
-		else:
-			# node_source is class name and path to gd script
-			var splits := node_source.split("|", true, 1)
-			var class_nam := splits[0]
-			var script_path := splits[1]
-			node = ClassDB.instantiate(class_nam)
-			node.set_script(load(script_path) as Script)
+			return (load(node_source) as PackedScene).instantiate()
+
+		# node_source is class name and path to gd script
+		var splits := node_source.split("|", true, 1)
+		var class_nam := splits[0]
+		var script_path := splits[1]
+		var nod := ClassDB.instantiate(class_nam) as Node
+		nod.set_script(load(script_path) as Script)
+		return nod
+
+	var node := MultiplayerCustomSpawn.try_custom_spawn(spawn_target, create_node, data)
+	if not is_instance_valid(node):
+		node = create_node.call()
 
 	node.name = spawn_name
 
