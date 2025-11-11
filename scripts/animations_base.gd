@@ -14,9 +14,6 @@ func _ready() -> void:
 	if !multiplayer.is_server():
 		return
 
-	hero.jumped.connect(_on_hero_jumped)
-	hero.landed.connect(_on_hero_landed)
-
 	caster.start_casting.connect(_on_caster_start_casting)
 
 
@@ -36,20 +33,6 @@ func _process(_delta: float) -> void:
 	animation_tree.set(
 		&"parameters/Alive/BodyBottomGraph/conditions/grounded",
 		hero.is_on_floor(),
-	)
-
-
-func _on_hero_jumped() -> void:
-	animation_tree.set(
-		&"parameters/Alive/BodyBottomGraph/conditions/jumped",
-		true,
-	)
-
-
-func _on_hero_landed() -> void:
-	animation_tree.set(
-		&"parameters/Alive/BodyBottomGraph/conditions/jumped",
-		false,
 	)
 
 

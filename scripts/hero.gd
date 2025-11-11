@@ -1,19 +1,13 @@
 class_name Hero
 extends CharacterBody3D
 
-@export var JUMP_VELOCITY: float = 4.5
-
 @export var input_controller: InputController
 @export var health: NetworkHP
 @export var caster: Caster
 @export var modifiers: Modifiers
 
-signal jumped()
-signal landed()
-
 var _local_peer := true
 var _prev_cast_mask := 0
-var _prev_jump := false
 var _prev_is_on_floor := false
 
 @onready var _prop_move_speed := modifiers.get_property(&"move_speed")
@@ -37,18 +31,8 @@ func _exit_tree() -> void:
 
 func _physics_process(delta: float) -> void:
 	if multiplayer.is_server():
-		if is_on_floor() and not _prev_is_on_floor:
-			landed.emit()
-
 		# Add the gravity.
-		if is_on_floor():
-			if input_controller.jump_input and not _prev_jump and not _prop_cant_move.final_value:
-				velocity.y = JUMP_VELOCITY
-				jumped.emit()
-
-			_prev_jump = input_controller.jump_input
-		else:
-			velocity += get_gravity() * delta
+		velocity += get_gravity() * delta
 
 		if _prop_cant_move.final_value:
 			velocity = Vector3.ZERO
