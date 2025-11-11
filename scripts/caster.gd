@@ -4,6 +4,7 @@ extends Node3D
 ## Where ability nodes will store. Also ability nodes added to this container
 ## will be automatically added to this caster.
 @export var abilities_container: NodePath = "."
+@export var hero: Hero
 
 signal ability_added(ability_index: int)
 signal ability_removed(ability: Ability)

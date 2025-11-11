@@ -386,9 +386,10 @@ metadata/_custom_type_script = "uid://xrbns0ylm83m"
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hero/NetworkVisionArea3D"]
 shape = SubResource("SphereShape3D_tuyoq")
 
-[node name="Caster" type="Node3D" parent="Hero"]
+[node name="Caster" type="Node3D" parent="Hero" node_paths=PackedStringArray("hero")]
 script = ExtResource("7_oprun")
 abilities_container = NodePath("Abilities")
+hero = NodePath("..")
 metadata/_custom_type_script = "uid://bxi4djnou368t"
 
 [node name="Abilities" type="Node" parent="Hero/Caster"]
@@ -406,9 +407,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_fulsm")
 debug_color = Color(0.9891284, 0, 0.29943526, 0.41960785)
 
-[node name="UnitModifiers" type="Node" parent="Hero"]
+[node name="UnitModifiers" type="Node" parent="Hero" node_paths=PackedStringArray("carrier")]
 script = ExtResource("16_qfm1y")
 modifiable_properties = ExtResource("17_qfm1y")
+carrier = NodePath("..")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.5533916, 0.83292127, 0, -0.83292127, 0.5533916, 0, 16.35, 7.479)
