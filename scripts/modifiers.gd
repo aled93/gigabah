@@ -1,8 +1,11 @@
 class_name Modifiers
-extends Node
+extends MultiplayerCustomSpawn
+
+const _META_KNOWN_MODIFIER = "known_modifier"
 
 @export var modifiers_container: NodePath = ^"."
 @export var modifiable_properties: ModifiablesMap
+@export var carrier: Hero
 
 signal modifier_added(modifier: Modifier)
 signal modifier_removing(modifier: Modifier)
@@ -18,24 +21,14 @@ func add_modifier(modifier: Modifier) -> void:
 		push_error("attempt to add modifier, but node instance is invalid")
 		return
 
-	if not modifier.is_inside_tree():
-		_modifiers_container.add_child(modifier)
-		return
+	assert(not modifier.is_inside_tree(), "modifier already in tree")
 
 	if modifier in _modifiers:
 		return
 
-	# add all modifier's already existing property modifications
-	for prop_name: StringName in modifier._modified_properties.keys():
-		var prop := _get_or_create_prop(prop_name)
-		var mod := modifier._modified_properties[prop_name]
-		prop._mods.append(mod)
-		_recalc_property(prop_name)
+	_init_added_modifier(modifier)
 
-	modifier.name = modifier.to_string()
-	modifier.property_mod_changed.connect(_on_modifier_property_mod_changed)
-
-	_modifiers.append(modifier)
+	_modifiers_container.add_child(modifier)
 
 	NetSync.inherit_visibility(owner, modifier, true)
 
@@ -56,10 +49,10 @@ func remove_modifier(modifier: Modifier) -> void:
 		return
 
 	# remove all property modifications from property._mods
-	for prop_name: StringName in modifier._modified_properties.keys():
+	for prop_name: StringName in modifier.modified_properties.keys():
 		var prop := _properties[prop_name]
-		var mod := modifier._modified_properties[prop_name]
-		prop._mods.erase(mod)
+		var mod := modifier.modified_properties[prop_name]
+		prop.mods.erase(mod)
 		_recalc_property(prop_name)
 
 	modifier.property_mod_changed.disconnect(_on_modifier_property_mod_changed)
@@ -70,7 +63,10 @@ func remove_modifier(modifier: Modifier) -> void:
 
 
 func get_property(property_name: StringName) -> Property:
-	assert(property_name in modifiable_properties.properties, "attempt to get unknown property '%s'" % property_name)
+	assert(
+		property_name in modifiable_properties.properties,
+		"attempt to get unknown property '%s'" % property_name,
+	)
 	return _get_or_create_prop(property_name)
 
 
@@ -81,8 +77,8 @@ func get_modifiers_count() -> int:
 func get_modifier(index: int) -> Modifier:
 	if index >= 0 and index < _modifiers.size():
 		return _modifiers[index]
-	else:
-		return null
+
+	return null
 
 
 func _get_or_create_prop(prop_name: StringName) -> Property:
@@ -94,6 +90,9 @@ func _get_or_create_prop(prop_name: StringName) -> Property:
 
 
 func _ready() -> void:
+	super._ready()
+	spawn_function = _custom_spawn_modifier
+
 	if not is_instance_valid(_modifiers_container):
 		push_error("modifiers_container pointing to invalid node")
 	else:
@@ -113,6 +112,29 @@ func _process(_delta: float) -> void:
 	call_deferred(&"_recalc_properties")
 
 
+func _init_added_modifier(modifier: Modifier) -> void:
+	# add all modifier's already existing property modifications
+	for prop_name: StringName in modifier.modified_properties.keys():
+		var prop := _get_or_create_prop(prop_name)
+		var mod := modifier.modified_properties[prop_name]
+		prop.mods.append(mod)
+		_recalc_property(prop_name)
+
+	modifier.name = modifier.to_string()
+	modifier.carrier = carrier
+	modifier.property_mod_changed.connect(_on_modifier_property_mod_changed)
+	modifier.set_meta(_META_KNOWN_MODIFIER, true)
+
+	_modifiers.append(modifier)
+
+
+func _custom_spawn_modifier(create_node: Callable, _data: Variant) -> Modifier:
+	var modifier := create_node.call() as Modifier
+	push_warning("modifier %s replicated" % modifier)
+	_init_added_modifier(modifier)
+	return modifier
+
+
 func _recalc_properties() -> void:
 	for prop_name: StringName in _to_recalc:
 		_recalc_property(prop_name)
@@ -126,11 +148,11 @@ func _recalc_property(prop_name: StringName) -> void:
 
 	assert(prop_scheme, "attempt to modify unknown modifiable property '%s'" % prop_name)
 
-	prop.final_value = prop_scheme.calculate_value(prop._mods)
+	prop.final_value = prop_scheme.calculate_value(prop.mods)
 
 
 func _on_modifiers_container_child_entered(node: Node) -> void:
-	if node is not Modifier:
+	if node is not Modifier or node.has_meta(_META_KNOWN_MODIFIER):
 		return
 
 	add_modifier(node as Modifier)
@@ -143,11 +165,15 @@ func _on_modifiers_container_child_exiting(node: Node) -> void:
 	remove_modifier(node as Modifier)
 
 
-func _on_modifier_property_mod_changed(prop_name: StringName, mod: Modifier.PropertyMod, _modifier: Modifier) -> void:
+func _on_modifier_property_mod_changed(
+		prop_name: StringName,
+		mod: Modifier.PropertyMod,
+		_modifier: Modifier,
+) -> void:
 	var prop: Property = _get_or_create_prop(prop_name)
 
-	if mod not in prop._mods:
-		prop._mods.append(mod)
+	if mod not in prop.mods:
+		prop.mods.append(mod)
 
 	if prop_name not in _to_recalc:
 		_to_recalc.append(prop_name)
@@ -155,4 +181,4 @@ func _on_modifier_property_mod_changed(prop_name: StringName, mod: Modifier.Prop
 
 class Property:
 	var final_value: Variant
-	var _mods: Array[Modifier.PropertyMod] = []
+	var mods: Array[Modifier.PropertyMod] = []

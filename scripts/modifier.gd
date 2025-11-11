@@ -15,21 +15,20 @@ var icon_path: String = "res://assets/textures/ui/modifier_icons/%s.png" % get_s
 
 var expire_time := 0.0
 var destroy_on_expire := false
+var modified_properties: Dictionary[StringName, PropertyMod] = { }
 
 signal property_mod_changed(property_name: StringName, mod: PropertyMod, modifier: Modifier)
 signal icon_path_changed()
-
-var _modified_properties: Dictionary[StringName, PropertyMod] = { }
 
 
 func modify_property(property_name: StringName, amount: Variant, kind: ModifyKind = ModifyKind.PRE_ADDITIVE) -> void:
 	var changed := false
 	var prop_mod: PropertyMod
-	if property_name in _modified_properties:
-		prop_mod = _modified_properties[property_name]
+	if property_name in modified_properties:
+		prop_mod = modified_properties[property_name]
 	else:
 		prop_mod = PropertyMod.new()
-		_modified_properties[property_name] = prop_mod
+		modified_properties[property_name] = prop_mod
 		changed = true
 
 	changed = changed or (amount != prop_mod.amount)
