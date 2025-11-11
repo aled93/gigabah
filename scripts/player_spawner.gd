@@ -5,6 +5,7 @@ extends Node
 @export var player_scene: PackedScene
 @export var default_abilities: Array[PackedScene] = [
 	preload("res://scenes/abilities/devball.tscn"),
+	preload("res://scenes/abilities/jump.tscn"),
 ]
 
 
