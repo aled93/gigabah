@@ -31,14 +31,14 @@ var _input_action_events: Dictionary[StringName, Array]
 
 @export_group("audio")
 @export_custom(PropertiesInspector.PROPERTY_HINT_CUSTOM_EDITOR, "audio")
-var audioSettings: Dictionary[StringName, AudioSettingsModel]
+var audio_settings: Dictionary[StringName, AudioSettingsModel]
+
 
 func _init() -> void:
 	# pull defaults of input bindings
 	for action: StringName in InputMap.get_actions():
 		if not action.begins_with("ui_"):
 			_input_action_events.set(action, InputMap.action_get_events(action))
-			
 
 
 func _post_load() -> void:
@@ -56,14 +56,15 @@ func apply_input_action_events() -> void:
 		InputMap.action_erase_events(action)
 		for event: InputEvent in _input_action_events[action]:
 			InputMap.action_add_event(action, event)
-			
+
+
 func apply_audio_settings() -> void:
-	for bus_name: StringName in audioSettings:
+	for bus_name: StringName in audio_settings:
 		var bus_index: int = AudioServer.get_bus_index(bus_name)
-		
+
 		if bus_index == -1:
 			continue
-			
-		var bus_settings: AudioSettingsModel = audioSettings.get(bus_name)
+
+		var bus_settings: AudioSettingsModel = audio_settings.get(bus_name)
 		AudioServer.set_bus_volume_db(bus_index, linear_to_db(bus_settings.volume))
 		AudioServer.set_bus_mute(bus_index, bus_settings.muted)

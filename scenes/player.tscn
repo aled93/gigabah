@@ -347,23 +347,23 @@ parameters/Alive/FullBodyCastAnim/current_state = "Cast3"
 parameters/Alive/FullBodyCastAnim/transition_request = ""
 parameters/Alive/FullBodyCastAnim/current_index = 0
 
-[node name="FootStepsAudio" type="AudioStreamPlayer3D" parent="Hero/PlayerModel" node_paths=PackedStringArray("animationPlayer")]
+[node name="FootStepsAudio" type="AudioStreamPlayer3D" parent="Hero/PlayerModel" node_paths=PackedStringArray("animation_player")]
 stream = ExtResource("16_a8ls1")
 unit_size = 5.81
 max_polyphony = 2
 bus = &"sfx"
 attenuation_filter_cutoff_hz = 12097.0
 script = ExtResource("12_4r5pv")
-animationPlayer = NodePath("../AnimationPlayer")
+animation_player = NodePath("../AnimationPlayer")
 
-[node name="VoiceAudio" type="AudioStreamPlayer3D" parent="Hero/PlayerModel" node_paths=PackedStringArray("animationPlayer", "animationTree", "hero")]
+[node name="VoiceAudio" type="AudioStreamPlayer3D" parent="Hero/PlayerModel" node_paths=PackedStringArray("animation_player", "animation_tree", "hero")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6841979, 0)
 stream = ExtResource("5_fulsm")
 unit_size = 21.36
 bus = &"voice"
 script = ExtResource("14_60mlk")
-animationPlayer = NodePath("../AnimationPlayer")
-animationTree = NodePath("../AnimationTree")
+animation_player = NodePath("../AnimationPlayer")
+animation_tree = NodePath("../AnimationTree")
 hero = NodePath("../..")
 
 [node name="ScreenSpacePosition" type="Node3D" parent="Hero" node_paths=PackedStringArray("canvas_layer")]
