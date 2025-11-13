@@ -1,0 +1,28 @@
+[gd_scene load_steps=6 format=3 uid="uid://fyvnqbdfgw0q"]
+
+[ext_resource type="Texture2D" uid="uid://1dqoj5v4u6p0" path="res://assets/models/maps/textures/Sky.png" id="1_uh0ji"]
+[ext_resource type="PackedScene" uid="uid://dol7m66yvvh6m" path="res://assets/models/maps/Arena_new.blend" id="6_7h5a7"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_uh0ji"]
+panorama = ExtResource("1_uh0ji")
+energy_multiplier = 0.9
+
+[sub_resource type="Sky" id="Sky_7h5a7"]
+sky_material = SubResource("PanoramaSkyMaterial_uh0ji")
+
+[sub_resource type="Environment" id="Environment_41c2a"]
+background_mode = 2
+sky = SubResource("Sky_7h5a7")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="Index3d" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_41c2a")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Arena_new" parent="." instance=ExtResource("6_7h5a7")]
