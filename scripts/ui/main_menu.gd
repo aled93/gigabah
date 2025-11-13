@@ -40,6 +40,8 @@ func _on_enter_game_pressed() -> void:
 	var join_addr: Variant = App.cmdline_arguments.get("--join-address")
 	if join_addr is String:
 		NetworkManager.start_client(join_addr as String)
+	elif OS.has_feature("editor"):
+		NetworkManager.start_client("127.0.0.1")
 	else:
 		NetworkManager.start_client()
 	get_tree().change_scene_to_packed(game_scene)

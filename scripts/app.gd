@@ -22,7 +22,7 @@ func _ready() -> void:
 	var next_scene: PackedScene
 
 	if OS.has_feature("dedicated_server"):
-		NetworkManager.start_server()
+		NetworkManager.start_server(cmdline_arguments.get("--listen-address", "*"))
 		next_scene = dedicated_server_scene
 	else:
 		next_scene = client_scene
