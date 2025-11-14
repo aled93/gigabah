@@ -2,12 +2,14 @@
 class_name Modifier
 extends Node
 
+const ICON_PATH_PATTERN = "res://assets/textures/ui/modifier_icons/%s.png"
+
 var carrier: Hero:
 	set(val):
-		assert(not carrier, "you can't just change modifier carrier, you need to create new modifier for the new carrier")
+		assert(not carrier, "you can't change modifier's carrier")
 		carrier = val
 
-var icon_path: String = "res://assets/textures/ui/modifier_icons/%s.png" % get_script().get_global_name():
+var icon_path: String = ICON_PATH_PATTERN % get_script().get_global_name():
 	set(val):
 		if val != icon_path:
 			icon_path = val
@@ -21,23 +23,27 @@ signal property_mod_changed(property_name: StringName, mod: PropertyMod, modifie
 signal icon_path_changed()
 
 
-func modify_property(property_name: StringName, amount: Variant, kind: ModifyKind = ModifyKind.PRE_ADDITIVE) -> void:
-	var changed := false
+func modify_property(
+		property_name: StringName,
+		amount: Variant,
+		kind: ModifyKind = ModifyKind.PRE_ADDITIVE,
+) -> void:
+	var prop_changed := false
 	var prop_mod: PropertyMod
 	if property_name in modified_properties:
 		prop_mod = modified_properties[property_name]
 	else:
 		prop_mod = PropertyMod.new()
 		modified_properties[property_name] = prop_mod
-		changed = true
+		prop_changed = true
 
-	changed = changed or (amount != prop_mod.amount)
-	changed = changed or (kind != prop_mod.kind)
+	prop_changed = prop_changed or (amount != prop_mod.amount)
+	prop_changed = prop_changed or (kind != prop_mod.kind)
 
 	prop_mod.amount = amount
 	prop_mod.kind = kind
 
-	if changed:
+	if prop_changed:
 		property_mod_changed.emit(property_name, prop_mod, self)
 
 
