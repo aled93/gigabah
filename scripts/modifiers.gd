@@ -60,12 +60,24 @@ func remove_modifier(modifier: Modifier) -> void:
 	Utils.array_erase_replacing(_modifiers, _modifiers.find(modifier))
 
 
-func get_property(property_name: StringName) -> Property:
+func _get_property(property_name: StringName) -> Property:
 	assert(
 		property_name in modifiable_properties.properties,
 		"attempt to get unknown property '%s'" % property_name,
 	)
 	return _get_or_create_prop(property_name)
+
+
+func get_bool_property(property_name: StringName) -> ModifiableBoolean.BoolProperty:
+	return _get_property(property_name) as ModifiableBoolean.BoolProperty
+
+
+func get_float_property(property_name: StringName) -> ModifiableFloat.FloatProperty:
+	return _get_property(property_name) as ModifiableFloat.FloatProperty
+
+
+func get_int_property(property_name: StringName) -> ModifiableInteger.IntProperty:
+	return _get_property(property_name) as ModifiableInteger.IntProperty
 
 
 func get_modifiers_count() -> int:
@@ -82,7 +94,8 @@ func get_modifier(index: int) -> Modifier:
 func _get_or_create_prop(prop_name: StringName) -> Property:
 	var prop := _properties.get(prop_name) as Property
 	if not prop:
-		prop = Property.new()
+		var modifiable_prop := modifiable_properties.properties[prop_name]
+		prop = modifiable_prop.create_typed_property()
 		_properties[prop_name] = prop
 	return prop
 
@@ -148,7 +161,7 @@ func _recalc_property(prop_name: StringName) -> void:
 
 	assert(prop_scheme, "attempt to modify unknown modifiable property '%s'" % prop_name)
 
-	prop.final_value = prop_scheme.calculate_value(prop.mods)
+	prop.untyped_final_value = prop_scheme.calculate_value(prop.mods)
 
 
 func _on_modifiers_container_child_entered(node: Node) -> void:
@@ -180,5 +193,5 @@ func _on_modifier_property_mod_changed(
 
 
 class Property:
-	var final_value: Variant
+	var untyped_final_value: Variant
 	var mods: Array[Modifier.PropertyMod] = []

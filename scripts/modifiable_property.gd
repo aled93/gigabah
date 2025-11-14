@@ -12,3 +12,7 @@ func get_default_value() -> Variant
 
 @abstract
 func calculate_value(mods: Array[Modifier.PropertyMod]) -> Variant
+
+
+@abstract
+func create_typed_property() -> Modifiers.Property

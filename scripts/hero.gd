@@ -10,11 +10,11 @@ var _local_peer := true
 var _prev_cast_mask := 0
 var _prev_is_on_floor := false
 
-@onready var _prop_move_speed := modifiers.get_property(&"move_speed")
-@onready var _prop_turn_rate := modifiers.get_property(&"turn_rate")
-@onready var _prop_cant_move := modifiers.get_property(&"cant_move")
-@onready var _prop_cant_turn := modifiers.get_property(&"cant_turn")
-@onready var _prop_cant_cast := modifiers.get_property(&"cant_cast")
+@onready var _prop_move_speed := modifiers.get_float_property(&"move_speed")
+@onready var _prop_turn_rate := modifiers.get_float_property(&"turn_rate")
+@onready var _prop_cant_move := modifiers.get_bool_property(&"cant_move")
+@onready var _prop_cant_turn := modifiers.get_bool_property(&"cant_turn")
+@onready var _prop_cant_cast := modifiers.get_bool_property(&"cant_cast")
 
 
 func _ready() -> void:

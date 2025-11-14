@@ -28,3 +28,13 @@ func calculate_value(mods: Array[Modifier.PropertyMod]) -> Variant:
 				post_add += mod.amount
 
 	return clampf(pre_add * multiplier + post_add, min_value, max_value)
+
+
+func create_typed_property() -> Modifiers.Property:
+	return FloatProperty.new()
+
+
+class FloatProperty extends Modifiers.Property:
+	var final_value: float:
+		get:
+			return 0.0 if untyped_final_value == null else untyped_final_value as float

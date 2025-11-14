@@ -36,3 +36,13 @@ func calculate_value(mods: Array[Modifier.PropertyMod]) -> Variant:
 		result = mini(result, max_value)
 
 	return result
+
+
+func create_typed_property() -> Modifiers.Property:
+	return IntProperty.new()
+
+
+class IntProperty extends Modifiers.Property:
+	var final_value: int:
+		get:
+			return 0 if untyped_final_value == null else untyped_final_value as int
