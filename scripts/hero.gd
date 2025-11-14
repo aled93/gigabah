@@ -9,12 +9,14 @@ extends CharacterBody3D
 var _local_peer := true
 var _prev_cast_mask := 0
 var _prev_is_on_floor := false
+var _hp_regen_accum := 0.0
 
 @onready var _prop_move_speed := modifiers.get_float_property(&"move_speed")
 @onready var _prop_turn_rate := modifiers.get_float_property(&"turn_rate")
 @onready var _prop_cant_move := modifiers.get_bool_property(&"cant_move")
 @onready var _prop_cant_turn := modifiers.get_bool_property(&"cant_turn")
 @onready var _prop_cant_cast := modifiers.get_bool_property(&"cant_cast")
+@onready var _prop_hp_regen := modifiers.get_float_property(&"hp_regen")
 
 
 func _ready() -> void:
@@ -42,6 +44,13 @@ func _physics_process(delta: float) -> void:
 
 		_prev_is_on_floor = is_on_floor()
 		move_and_slide()
+
+		# regen hp
+		_hp_regen_accum += _prop_hp_regen.final_value * delta
+		var regened_hp_int := int(floor(_hp_regen_accum))
+		if regened_hp_int >= 1:
+			health.heal(regened_hp_int)
+			_hp_regen_accum -= float(regened_hp_int)
 
 
 func _process(_delta: float) -> void:
