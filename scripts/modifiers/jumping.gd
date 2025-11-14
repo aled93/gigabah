@@ -33,7 +33,10 @@ func _physics_process(delta: float) -> void:
 
 	if _t + delta < 1.0:
 		_t += delta
-		carrier.global_position = Utils.quadratic_bezier_3d(_p0, _p1, _p2, _t)
+		var new_pos := Utils.quadratic_bezier_3d(_p0, _p1, _p2, _t)
+		var delta_motion := new_pos - carrier.global_position
+		if carrier.move_and_collide(delta_motion):
+			queue_free()
 	else:
 		carrier.global_position = land_point
 		queue_free()
