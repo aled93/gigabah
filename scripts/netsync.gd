@@ -101,7 +101,7 @@ func inherit_visibility(source_node: Node, target_node: Node, continously: bool 
 			_register_tracking_node(target_net_node)
 			_on_start_tracking_node(target_node, target_net_node)
 
-		net_node.inherited_vision_nodes.push_back(target_net_node)
+		net_node.add_inherited_vision_netnode(target_net_node)
 
 	for peer_id: int in net_node.peers_vision:
 		set_visibility_for(peer_id, target_node, true)
@@ -393,6 +393,28 @@ class _NetworkNodeInfo:
 		self.node = nod
 		self.node_instance_id = nod.get_instance_id()
 		self.network_id = net_id
+
+
+	func add_inherited_vision_netnode(net_node: _NetworkNodeInfo) -> void:
+		assert(net_node != self, "Attempt to inherit network visibility from itself")
+		assert(is_instance_valid(net_node.node), "net_node.node is invalid node")
+
+		if net_node in inherited_vision_nodes:
+			push_warning("Node already inherits visibility")
+			return
+
+		inherited_vision_nodes.append(net_node)
+
+		net_node.node.tree_exiting.connect(
+			_on_inherited_vis_node_exiting_tree.bind(net_node),
+			CONNECT_ONE_SHOT,
+		)
+
+
+	func _on_inherited_vis_node_exiting_tree(net_node: _NetworkNodeInfo) -> void:
+		var index := inherited_vision_nodes.find(net_node)
+		if index >= 0:
+			Utils.array_erase_replacing(inherited_vision_nodes, index)
 
 
 enum VisibilityError {
