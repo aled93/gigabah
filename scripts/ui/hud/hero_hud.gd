@@ -18,9 +18,12 @@ static var instance: HeroHUD
 @onready var abilities_bar: Container = %AbilitiesBar
 @onready var health_bar: TextureProgressBar = %HealthBar
 @onready var health_num: Label = %HealthNumber
+@onready var health_regen_num: Label = %HealthRegenNumber
 
 var _ability_icon_map: Dictionary[Ability, HUDAbility] = { }
 var _modifier_icon_map: Dictionary[Modifier, HUDModifier] = { }
+
+var _prop_hp_regen: ModifiableFloat.FloatProperty
 
 
 func _ready() -> void:
@@ -42,6 +45,8 @@ func _unlink_hero() -> void:
 		icon.queue_free()
 	_modifier_icon_map.clear()
 
+	_prop_hp_regen = null
+
 
 func _link_hero() -> void:
 	if hero.caster:
@@ -55,6 +60,8 @@ func _link_hero() -> void:
 		hero.caster.ability_removed.connect(_on_ability_removed)
 		hero.modifiers.modifier_added.connect(_on_modifier_added)
 		hero.modifiers.modifier_removing.connect(_on_modifier_removing)
+
+	_prop_hp_regen = hero.modifiers.get_float_property(&"hp_regen")
 
 
 func _on_ability_added(ability_index: int) -> void:
@@ -100,6 +107,11 @@ func _update_visual(_delta: float) -> void:
 		health_bar.max_value = hero.health.max_health
 		health_bar.value = hero.health.current_health
 		health_num.text = "%d/%d" % [hero.health.current_health, hero.health.max_health]
+
+	if _prop_hp_regen:
+		health_regen_num.text = "%.1f" % _prop_hp_regen.final_value
+	else:
+		health_regen_num.text = "0"
 
 
 func _process(delta: float) -> void:
