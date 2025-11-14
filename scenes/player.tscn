@@ -396,7 +396,7 @@ metadata/_custom_type_script = "uid://bxi4djnou368t"
 
 [node name="HitBoxArea" type="Area3D" parent="Hero" node_paths=PackedStringArray("hero", "hp")]
 collision_layer = 2
-collision_mask = 4
+collision_mask = 12
 script = ExtResource("7_qfm1y")
 hero = NodePath("..")
 hp = NodePath("../Components/NetworkHp")

@@ -143,7 +143,6 @@ func _init_added_modifier(modifier: Modifier) -> void:
 
 func _custom_spawn_modifier(create_node: Callable, _data: Variant) -> Modifier:
 	var modifier := create_node.call() as Modifier
-	push_warning("modifier %s replicated" % modifier)
 	_init_added_modifier(modifier)
 	return modifier
 
