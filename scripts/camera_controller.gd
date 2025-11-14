@@ -30,7 +30,7 @@ func _ready() -> void:
 	var cl := owner as NetworkClient
 	if cl and cl.name.to_int() != multiplayer.get_unique_id():
 		_local_client = false
-		set_process_unhandled_input(false)
+		set_process_input(false)
 
 
 func _process(delta: float) -> void:
