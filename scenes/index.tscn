@@ -1,23 +1,12 @@
-[gd_scene load_steps=11 format=3 uid="uid://bde2flq2egpcv"]
+[gd_scene load_steps=6 format=3 uid="uid://bde2flq2egpcv"]
 
 [ext_resource type="Script" uid="uid://f0ylqu4wka2x" path="res://scripts/player_spawner.gd" id="2_hhnvu"]
 [ext_resource type="PackedScene" uid="uid://dmp8nc3aenbut" path="res://scenes/player.tscn" id="3_8s3bs"]
-[ext_resource type="PackedScene" path="res://scenes/ui/in_game_menu.tscn" id="5_ingamemenu"]
-[ext_resource type="PackedScene" uid="uid://bccib7r8tci6f" path="res://assets/models/maps/Arena.blend" id="7_cjd57"]
+[ext_resource type="PackedScene" uid="uid://fyvnqbdfgw0q" path="res://scenes/Testing_arena.tscn" id="5_8s3bs"]
+[ext_resource type="PackedScene" uid="uid://dxtxfb21jpq0" path="res://scenes/ui/in_game_menu.tscn" id="5_ingamemenu"]
 [ext_resource type="PackedScene" uid="uid://dvghod301bs4s" path="res://scenes/ui/hud/hero_hud.tscn" id="7_eao86"]
 
-[sub_resource type="Environment" id="Environment_cjd57"]
-glow_enabled = true
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_qt2py"]
-size = Vector2(11.885, 12.55)
-
-[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_4bt8n"]
-
 [node name="Index3d" type="Node3D"]
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_cjd57")
 
 [node name="PlayerSpawner" type="Node" parent="."]
 script = ExtResource("2_hhnvu")
@@ -25,37 +14,10 @@ spawn_path = NodePath("..")
 player_scene = ExtResource("3_8s3bs")
 metadata/_custom_type_script = "uid://f0ylqu4wka2x"
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(1.00225, 0, 0, 0, 1.00225, 0, 0, 0, 1.00225, 0, 0, 0)
-disable_mode = 1
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-mesh = SubResource("PlaneMesh_qt2py")
-skeleton = NodePath("../..")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-shape = SubResource("WorldBoundaryShape3D_4bt8n")
-
-[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.042083, -0.940664, 0.33672, -0.727937, 0.259711, 0.634553, -0.684351, -0.218407, -0.695674, -2.62139, 9.98508, -2.9693)
-light_energy = 0.354
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.617228, -0.453674, 0.642814, -0.159227, 0.728081, 0.666742, -0.770504, -0.513885, 0.377155, 0, 5.77813, 0)
-light_energy = 0.839
-shadow_enabled = true
-sky_mode = 1
-
-[node name="OmniLight3D" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.77813, 0)
-shadow_enabled = true
-omni_range = 16.9915
-
 [node name="InGameMenu" parent="." instance=ExtResource("5_ingamemenu")]
-
-[node name="Arena" parent="." instance=ExtResource("7_cjd57")]
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
 [node name="HeroHud" parent="HUD" instance=ExtResource("7_eao86")]
+
+[node name="Index3d" parent="." instance=ExtResource("5_8s3bs")]
