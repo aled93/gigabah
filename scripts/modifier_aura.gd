@@ -39,6 +39,7 @@ func _on_area_entered(other: Area3D) -> void:
 	_tree_exiting_binds[hitbox.hero] = tree_exiting_bind
 
 	hitbox.tree_exiting.connect(tree_exiting_bind, CONNECT_ONE_SHOT)
+	new_modifier.tree_exiting.connect(_on_modifier_tree_exiting.bind(hitbox.hero), CONNECT_ONE_SHOT)
 
 
 func _on_area_exited(other: Area3D) -> void:
@@ -46,6 +47,11 @@ func _on_area_exited(other: Area3D) -> void:
 		return
 
 	var hitbox := other as HitBox3D
+
+	if not _affected.has(hitbox.hero):
+		# modifier freed earlier
+		return
+
 	var modifier_on_hero := _affected[hitbox.hero]
 
 	modifier_on_hero.queue_free()
@@ -62,3 +68,8 @@ func _on_hitbox_tree_exiting(hitbox: HitBox3D) -> void:
 	modifier_on_hero.queue_free()
 	_affected.erase(hitbox.hero)
 	_tree_exiting_binds.erase(hitbox.hero)
+
+
+func _on_modifier_tree_exiting(hero: Hero) -> void:
+	_affected.erase(hero)
+	_tree_exiting_binds.erase(hero)
