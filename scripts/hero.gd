@@ -22,7 +22,12 @@ func _ready() -> void:
 
 	if _local_peer and HeroHUD.instance:
 		HeroHUD.instance.hero = self
-
+		
+	health.health_depleted.connect(_play_death_sound)
+	
+	
+func _play_death_sound() -> void:
+	AudioManagerScene.spawn_3d_audio(self, preload("uid://dqft0uvw33wd5"))
 
 func _exit_tree() -> void:
 	if _local_peer and HeroHUD.instance and HeroHUD.instance.hero == self:

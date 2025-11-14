@@ -37,8 +37,7 @@ func _create_death_audio() -> void:
 
 
 func _play_death_audio() -> void:
-	stream = death_stream
-	play()
+	AudioManagerScene.spawn_3d_audio(death_stream, global_position)
 
 
 func _play_cast_audio() -> void:

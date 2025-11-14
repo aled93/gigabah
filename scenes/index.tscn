@@ -4,7 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://dmp8nc3aenbut" path="res://scenes/player.tscn" id="3_8s3bs"]
 [ext_resource type="PackedScene" uid="uid://fyvnqbdfgw0q" path="res://scenes/Testing_arena.tscn" id="5_8s3bs"]
 [ext_resource type="PackedScene" uid="uid://dxtxfb21jpq0" path="res://scenes/ui/in_game_menu.tscn" id="5_ingamemenu"]
-
 [ext_resource type="PackedScene" uid="uid://dvghod301bs4s" path="res://scenes/ui/hud/hero_hud.tscn" id="7_eao86"]
 
 [node name="Index3d" type="Node3D"]
