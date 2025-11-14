@@ -1,6 +1,9 @@
 class_name Jump
 extends Ability
 
+var max_distance := 10.0
+
+
 func _get_cast_method() -> CastMethod:
 	return Ability.CastMethod.POINT
 
@@ -8,6 +11,8 @@ func _get_cast_method() -> CastMethod:
 func _cast() -> CastResult:
 	if not _has_target_point():
 		return CastResult.ERROR_NO_TARGET
+	if _target_point.distance_to(caster.global_position) > max_distance:
+		return CastResult.ERROR_TARGET_IS_FAR
 
 	var modifier := JumpingModifier.new()
 	modifier.jump_height = 15.0
