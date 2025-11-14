@@ -1,5 +1,8 @@
 extends Node
 
+const METHOD_NET_SERIALIZE = &"network_serialize"
+const METHOD_NET_DESERIALIZE = &"network_deserialize"
+
 var _netnode_by_instid: Dictionary[int, _NetworkNodeInfo] = { }
 var _netnode_by_netid: Dictionary[int, _NetworkNodeInfo] = { }
 
@@ -283,7 +286,12 @@ func _on_peer_got_vision(node: Node, net_node: _NetworkNodeInfo, peer_id: int) -
 		else:
 			node_source = node.get_class()
 	var spawn_path := node.get_path()
-	_rpc_spawn.rpc_id(peer_id, node_source, spawn_path, pos, net_node.network_id, null)
+
+	var data: Variant = null
+	if node.has_method(METHOD_NET_SERIALIZE):
+		data = node.call(METHOD_NET_SERIALIZE)
+
+	_rpc_spawn.rpc_id(peer_id, node_source, spawn_path, pos, net_node.network_id, data)
 
 
 ## called only on owner side
@@ -341,6 +349,10 @@ func _rpc_spawn(node_source: String, spawn_path: NodePath, pos: Vector3, network
 		var script_path := splits[1]
 		var nod := ClassDB.instantiate(class_nam) as Node
 		nod.set_script(load(script_path) as Script)
+
+		if data != null and nod.has_method(METHOD_NET_DESERIALIZE):
+			nod.call(METHOD_NET_DESERIALIZE, data)
+
 		return nod
 
 	var node := MultiplayerCustomSpawn.try_custom_spawn(spawn_target, create_node, data)
