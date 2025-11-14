@@ -13,7 +13,7 @@ var _p1: Vector3
 var _p2: Vector3
 
 
-func _ready() -> void:
+func _modifier_start() -> void:
 	modify_property(&"cant_move", true)
 	modify_property(&"cant_turn", true)
 	modify_property(&"cant_cast", true)

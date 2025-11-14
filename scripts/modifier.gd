@@ -47,6 +47,11 @@ func modify_property(
 		property_mod_changed.emit(property_name, prop_mod, self)
 
 
+## Called when modifier attached to carrier
+func _modifier_start() -> void:
+	pass
+
+
 func _physics_process(delta: float) -> void:
 	if expire_time > delta:
 		expire_time -= delta

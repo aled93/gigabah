@@ -32,6 +32,8 @@ func add_modifier(modifier: Modifier) -> void:
 
 	NetSync.inherit_visibility(owner, modifier, true)
 
+	modifier._modifier_start()
+
 
 func remove_modifier(modifier: Modifier) -> void:
 	if not is_instance_valid(modifier):
@@ -144,6 +146,7 @@ func _init_added_modifier(modifier: Modifier) -> void:
 func _custom_spawn_modifier(create_node: Callable, _data: Variant) -> Modifier:
 	var modifier := create_node.call() as Modifier
 	_init_added_modifier(modifier)
+	modifier._modifier_start()
 	return modifier
 
 
