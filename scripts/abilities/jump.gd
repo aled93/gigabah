@@ -4,6 +4,10 @@ extends Ability
 var max_distance := 10.0
 
 
+static func _static_init() -> void:
+	preload("res://scripts/modifiers/jumping.gd")
+
+
 func _get_cast_method() -> CastMethod:
 	return Ability.CastMethod.POINT
 
