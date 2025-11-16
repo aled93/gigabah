@@ -6,7 +6,6 @@ const WALK_ANIM_SPEED = 5.0
 @export var input_controller: InputController
 @export var hero: Hero
 @export var caster: Caster
-@export var model_root: Node3D
 @export var animation_tree: AnimationTree
 
 
@@ -20,11 +19,6 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if !multiplayer.is_server():
 		return
-
-	if not input_controller.move_direction.is_zero_approx():
-		var new_rot := model_root.rotation
-		new_rot.y = -input_controller.move_direction.angle() - PI * 0.5
-		model_root.rotation = new_rot
 
 	animation_tree.set(
 		&"parameters/Alive/BodyBottomGraph/WalkBlend/blend_position",

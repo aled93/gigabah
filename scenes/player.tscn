@@ -230,12 +230,13 @@ target_position = Vector3(6.945, 23.925, 6.02)
 debug_shape_custom_color = Color(1, 0, 0, 1)
 debug_shape_thickness = 5
 
-[node name="Hero" type="CharacterBody3D" parent="." node_paths=PackedStringArray("input_controller", "health", "caster", "modifiers")]
+[node name="Hero" type="CharacterBody3D" parent="." node_paths=PackedStringArray("input_controller", "health", "caster", "modifiers", "model")]
 script = ExtResource("2_jej6c")
 input_controller = NodePath("../InputController")
 health = NodePath("Components/NetworkHp")
 caster = NodePath("Caster")
 modifiers = NodePath("UnitModifiers")
+model = NodePath("PlayerModel")
 
 [node name="Components" type="Node" parent="Hero"]
 
@@ -280,12 +281,11 @@ replication_interval = 0.1
 delta_interval = 0.1
 replication_config = SubResource("SceneReplicationConfig_a8ls1")
 
-[node name="AnimationsBase" type="Node" parent="Hero/Components" node_paths=PackedStringArray("input_controller", "hero", "caster", "model_root", "animation_tree")]
+[node name="AnimationsBase" type="Node" parent="Hero/Components" node_paths=PackedStringArray("input_controller", "hero", "caster", "animation_tree")]
 script = ExtResource("11_d2wvv")
 input_controller = NodePath("../../../InputController")
 hero = NodePath("../..")
 caster = NodePath("../../Caster")
-model_root = NodePath("../../PlayerModel")
 animation_tree = NodePath("../../PlayerModel/AnimationTree")
 
 [node name="ModelRotationSynchronizer" type="MultiplayerSynchronizer" parent="Hero/Components"]
@@ -359,12 +359,11 @@ range_control = NodePath("../OverheadInfo/HealthContainer/HealthBar")
 hp = NodePath("../../Components/NetworkHp")
 metadata/_custom_type_script = "uid://btqg13317lydt"
 
-[node name="AnimationsBase" type="Node" parent="Hero" node_paths=PackedStringArray("input_controller", "hero", "caster", "model_root", "animation_tree")]
+[node name="AnimationsBase" type="Node" parent="Hero" node_paths=PackedStringArray("input_controller", "hero", "caster", "animation_tree")]
 script = ExtResource("11_d2wvv")
 input_controller = NodePath("../../InputController")
 hero = NodePath("..")
 caster = NodePath("../Caster")
-model_root = NodePath("../PlayerModel")
 animation_tree = NodePath("../PlayerModel/AnimationTree")
 
 [node name="NetworkBoundingArea3D" type="Area3D" parent="Hero"]
