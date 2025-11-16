@@ -165,6 +165,13 @@ func _recalc_property(prop_name: StringName) -> void:
 
 	prop.untyped_final_value = prop_scheme.calculate_value(prop.mods)
 
+	if multiplayer.is_server():
+		NetSync.rpc_to_observing_peers(
+			owner,
+			_rpc_property_final_value,
+			[prop_name.hash(), prop.untyped_final_value],
+		)
+
 
 func _on_modifiers_container_child_entered(node: Node) -> void:
 	if node is not Modifier or node.has_meta(_META_KNOWN_MODIFIER):
@@ -192,6 +199,14 @@ func _on_modifier_property_mod_changed(
 
 	if prop_name not in _to_recalc:
 		_to_recalc.append(prop_name)
+
+
+@rpc("authority", "reliable")
+func _rpc_property_final_value(prop_name_hash: int, prop_value: Variant) -> void:
+	var prop_name := modifiable_properties.get_property_name_by_hash(prop_name_hash)
+	assert(prop_name != null, "Server sent unknown hash of property name")
+
+	_get_or_create_prop(prop_name).untyped_final_value = prop_value
 
 
 class Property:
