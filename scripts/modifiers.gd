@@ -201,6 +201,40 @@ func _on_modifier_property_mod_changed(
 		_to_recalc.append(prop_name)
 
 
+func network_serialize() -> Variant:
+	# [prop_hash(int), prop_value(Variant), ...]
+	var snapshot := []
+
+	for prop_name: StringName in modifiable_properties.properties:
+		var scheme := modifiable_properties.properties[prop_name]
+		var prop := _get_or_create_prop(prop_name)
+
+		if prop.untyped_final_value == null:
+			continue
+		if prop.untyped_final_value == scheme.get_default_value():
+			continue
+
+		snapshot.append(prop_name.hash())
+		snapshot.append(prop.untyped_final_value)
+
+	if not snapshot.is_empty():
+		return snapshot
+
+	return null
+
+
+func network_deserialize(data: Variant) -> void:
+	var data_arr := data as Array
+	@warning_ignore("integer_division")
+	for i: int in range(data_arr.size() / 2):
+		var prop_name_hash := data_arr[i * 2 + 0] as int
+		var prop_value: Variant = data_arr[i * 2 + 1]
+		var prop_name := modifiable_properties.get_property_name_by_hash(prop_name_hash)
+		var prop := _get_or_create_prop(prop_name)
+
+		prop.untyped_final_value = prop_value
+
+
 @rpc("authority", "reliable")
 func _rpc_property_final_value(prop_name_hash: int, prop_value: Variant) -> void:
 	var prop_name := modifiable_properties.get_property_name_by_hash(prop_name_hash)
