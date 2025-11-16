@@ -48,12 +48,13 @@ func remove_modifier(modifier: Modifier) -> void:
 		modifier.queue_free()
 		return
 
-	# remove all property modifications from property._mods
-	for prop_name: StringName in modifier.modified_properties.keys():
-		var prop := _properties[prop_name]
-		var mod := modifier.modified_properties[prop_name]
-		prop.mods.erase(mod)
-		_recalc_property(prop_name)
+	if multiplayer.is_server():
+		# remove all property modifications from property._mods
+		for prop_name: StringName in modifier.modified_properties.keys():
+			var prop := _properties[prop_name]
+			var mod := modifier.modified_properties[prop_name]
+			prop.mods.erase(mod)
+			_recalc_property(prop_name)
 
 	modifier.property_mod_changed.disconnect(_on_modifier_property_mod_changed)
 
@@ -122,16 +123,18 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	call_deferred(&"_recalc_properties")
+	if multiplayer.is_server():
+		call_deferred(&"_recalc_properties")
 
 
 func _init_added_modifier(modifier: Modifier) -> void:
-	# add all modifier's already existing property modifications
-	for prop_name: StringName in modifier.modified_properties.keys():
-		var prop := _get_or_create_prop(prop_name)
-		var mod := modifier.modified_properties[prop_name]
-		prop.mods.append(mod)
-		_recalc_property(prop_name)
+	if multiplayer.is_server():
+		# add all modifier's already existing property modifications
+		for prop_name: StringName in modifier.modified_properties.keys():
+			var prop := _get_or_create_prop(prop_name)
+			var mod := modifier.modified_properties[prop_name]
+			prop.mods.append(mod)
+			_recalc_property(prop_name)
 
 	modifier.name = modifier.to_string()
 	modifier.carrier = carrier
@@ -197,7 +200,7 @@ func _on_modifier_property_mod_changed(
 	if mod not in prop.mods:
 		prop.mods.append(mod)
 
-	if prop_name not in _to_recalc:
+	if multiplayer.is_server() and prop_name not in _to_recalc:
 		_to_recalc.append(prop_name)
 
 
