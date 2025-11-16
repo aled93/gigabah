@@ -287,9 +287,19 @@ func _on_peer_got_vision(node: Node, net_node: _NetworkNodeInfo, peer_id: int) -
 			node_source = node.get_class()
 	var spawn_path := node.get_path()
 
-	var data: Variant = null
-	if node.has_method(METHOD_NET_SERIALIZE):
-		data = node.call(METHOD_NET_SERIALIZE)
+	# [node_path(NodePath), serialized_data(Variant), ...]
+	var data: Array
+	for subnode: Node in Utils.RecursiveChildrenIterator.new(node, true, true):
+		if not subnode.has_method(METHOD_NET_SERIALIZE):
+			continue
+
+		var subdata: Variant = subnode.call(METHOD_NET_SERIALIZE)
+		if subdata == null:
+			continue
+
+		var subnode_path := node.get_path_to(subnode)
+		data.append(subnode_path)
+		data.append(subdata)
 
 	_rpc_spawn.rpc_id(peer_id, node_source, spawn_path, pos, net_node.network_id, data)
 
@@ -324,7 +334,13 @@ func _release_network_id(_network_id: int) -> void:
 
 
 @rpc("reliable")
-func _rpc_spawn(node_source: String, spawn_path: NodePath, pos: Vector3, network_id: int, data: Variant = null) -> void:
+func _rpc_spawn(
+		node_source: String,
+		spawn_path: NodePath,
+		pos: Vector3,
+		network_id: int,
+		data: Variant = null,
+) -> void:
 	var last_name_idx := spawn_path.get_name_count() - 1
 	var spawn_target_path := spawn_path.slice(0, last_name_idx)
 	var spawn_name := spawn_path.get_name(last_name_idx)
@@ -335,25 +351,43 @@ func _rpc_spawn(node_source: String, spawn_path: NodePath, pos: Vector3, network
 
 	var existing_node: Node = spawn_target.find_child(spawn_name, false, true)
 	if existing_node:
-		push_error("authority sent rpc to spawn node with name that already occupied in spawn_path by %s" % existing_node)
+		push_error(
+			"authority sent rpc to spawn node with name " +
+			"that already occupied in spawn_path by %s" % existing_node,
+		)
 		return
 
 	var create_node := func() -> Node:
+		var replicated_node: Node
 		if node_source.get_extension().to_lower() == "tscn":
 			# node_source is path to scene resource
-			return (load(node_source) as PackedScene).instantiate()
+			replicated_node = (load(node_source) as PackedScene).instantiate()
+		else:
+			# node_source is class name and path to gd script
+			var splits := node_source.split("|", true, 1)
+			var class_nam := splits[0]
+			var script_path := splits[1]
+			replicated_node = ClassDB.instantiate(class_nam) as Node
+			replicated_node.set_script(load(script_path) as Script)
 
-		# node_source is class name and path to gd script
-		var splits := node_source.split("|", true, 1)
-		var class_nam := splits[0]
-		var script_path := splits[1]
-		var nod := ClassDB.instantiate(class_nam) as Node
-		nod.set_script(load(script_path) as Script)
+		if data == null:
+			return replicated_node
 
-		if data != null and nod.has_method(METHOD_NET_DESERIALIZE):
-			nod.call(METHOD_NET_DESERIALIZE, data)
+		var data_arr := data as Array
+		@warning_ignore("integer_division")
+		for i: int in range(data_arr.size() / 2):
+			var subnode_path := data_arr[i * 2 + 0] as NodePath
+			var subnode_data: Variant = data_arr[i * 2 + 1]
 
-		return nod
+			var subnode := replicated_node.get_node(subnode_path)
+			assert(
+				subnode.has_method(METHOD_NET_DESERIALIZE),
+				"Got serialized network data, but method %s not found" % METHOD_NET_DESERIALIZE,
+			)
+
+			subnode.call(METHOD_NET_DESERIALIZE, subnode_data)
+
+		return replicated_node
 
 	var node := MultiplayerCustomSpawn.try_custom_spawn(spawn_target, create_node, data)
 	if not is_instance_valid(node):
