@@ -86,3 +86,13 @@ static func array_erase_replacing(array: Variant, index: int) -> void:
 
 static func quadratic_bezier_3d(p0: Vector3, p1: Vector3, p2: Vector3, t: float) -> Vector3:
 	return p0.lerp(p1, t).lerp(p2, t)
+
+
+static func cycle_float(v: float, v_min: float, v_max: float) -> float:
+	var v_range := v_max - v_min
+	if v_range == 0.0:
+		return v_min
+	var rem := fmod(v - v_min, v_range)
+	if rem < 0.0:
+		rem += v_range
+	return v_min + rem
