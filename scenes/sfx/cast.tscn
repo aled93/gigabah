@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://mqlhxpm56th8"]
+
+[ext_resource type="PackedScene" uid="uid://btrtukfglebl6" path="res://scenes/oneshot_audio.tscn" id="1_rhpqo"]
+[ext_resource type="AudioStream" uid="uid://dosvq12jl74dd" path="res://assets/audio/sfx/player_cast_sfx.tres" id="2_7cdcj"]
+
+[node name="AudioStreamPlayer3D" instance=ExtResource("1_rhpqo")]
+stream = ExtResource("2_7cdcj")

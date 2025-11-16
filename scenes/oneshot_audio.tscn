@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://btrtukfglebl6"]
+
+[ext_resource type="Script" uid="uid://xxqu6pl2uqxh" path="res://scripts/audio/oneshot_audio.gd" id="1_17xf8"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_bffc4"]
+radius = 20.0
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D"]
+script = ExtResource("1_17xf8")
+
+[node name="NetworkBoundingArea3D" type="Area3D" parent="."]
+collision_layer = 2147483648
+collision_mask = 2147483648
+monitoring = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NetworkBoundingArea3D"]
+shape = SubResource("SphereShape3D_bffc4")

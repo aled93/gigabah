@@ -4,9 +4,6 @@ extends AudioAnimationLink
 @export var animation_tree: AnimationTree
 @export var hero: Hero
 
-@onready var cast_stream: AudioStream = load("res://assets/audio/sfx/player_cast_sfx.tres")
-@onready var death_stream: AudioStream = load("res://assets/audio/sfx/player_death.wav")
-
 
 func _ready() -> void:
 	if multiplayer.is_server():
@@ -37,9 +34,14 @@ func _create_death_audio() -> void:
 
 
 func _play_death_audio() -> void:
-	AudioManagerScene.spawn_3d_audio(death_stream, global_position)
+	var death_sfx := preload("res://scenes/sfx/death.tscn").instantiate()
+	# каждая сетевая нода должна иметь уникальное имя, иначе она не заспавнится
+	# и по сути это десинк клиента. просто добавь instance id этой же ноды в её имя
+	death_sfx.name = "death_sfx_%d" % death_sfx.get_instance_id()
+	hero.add_child(death_sfx)
 
 
 func _play_cast_audio() -> void:
-	stream = cast_stream
-	play()
+	var cast_sfx := preload("res://scenes/sfx/cast.tscn").instantiate()
+	cast_sfx.name = "cast_sfx_%d" % cast_sfx.get_instance_id()
+	hero.add_child(cast_sfx)
