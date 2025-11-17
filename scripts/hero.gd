@@ -122,7 +122,7 @@ func _physics_process(delta: float) -> void:
 			# var just_pressed_cast_mask := pressed_cast_mask & ~_prev_cast_mask
 			_prev_cast_mask = pressed_cast_mask
 
-			for cast_slot_idx: int in range(3):
+			for cast_slot_idx: int in range(4):
 				if (pressed_cast_mask & (1 << cast_slot_idx)) == 0:
 					continue
 
