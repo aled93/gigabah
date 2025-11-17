@@ -3,3 +3,4 @@ modifier_HeroBaseModifier,Базовые характеристики игрок
 modifier_DevBallTarget,Замедление от попадания
 modifier_CrystalAuraModifier,Свет кристала
 modifier_MiasmaInfluence,Влияние миазмов
+modifier_Dashing,Скользит

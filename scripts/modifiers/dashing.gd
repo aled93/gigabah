@@ -11,6 +11,8 @@ var _traveled := 0.0
 func _modifier_start() -> void:
 	expire_time = distance / speed
 
+	icon_path = "res://assets/textures/ui/ability_icons/Dash.png"
+
 
 func _physics_process(delta: float) -> void:
 	var step_dist := speed
