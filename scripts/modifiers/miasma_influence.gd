@@ -7,6 +7,10 @@ extends Modifier
 var _next_tick_time := 0.0
 
 
+func _modifier_start() -> void:
+	icon_path = "res://assets/textures/ui/ability_icons/InnerSpirit.png"
+
+
 func _physics_process(delta: float) -> void:
 	if not carrier:
 		return
