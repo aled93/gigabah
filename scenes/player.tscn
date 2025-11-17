@@ -232,7 +232,7 @@ metadata/_custom_type_script = "uid://c5687ukdvwk4m"
 [node name="CursorRaycast" type="RayCast3D" parent="InputController"]
 target_position = Vector3(6.945, 23.925, 6.02)
 debug_shape_custom_color = Color(1, 0, 0, 1)
-debug_shape_thickness = 5
+debug_shape_thickness = 1
 
 [node name="Hero" type="CharacterBody3D" parent="." node_paths=PackedStringArray("input_controller", "health", "caster", "modifiers", "model")]
 script = ExtResource("2_jej6c")
