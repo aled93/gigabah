@@ -5,4 +5,5 @@
 [resource]
 script = ExtResource("1_mlp7w")
 animation_name = "Jump"
+cast_point = 2.167
 metadata/_custom_type_script = "uid://cg7jutrjo5cuh"

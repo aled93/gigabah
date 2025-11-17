@@ -6,4 +6,5 @@
 script = ExtResource("1_3y1fy")
 animation_kind = 1
 animation_name = "Cast1"
+cast_point = 0.165
 metadata/_custom_type_script = "uid://cg7jutrjo5cuh"

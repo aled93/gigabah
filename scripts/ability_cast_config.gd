@@ -3,6 +3,8 @@ extends Resource
 
 @export var animation_kind: AnimationKind
 @export var animation_name: String
+## Delay between cast start and actual effect of ability, in seconds
+@export var cast_point: float = 0.0
 
 
 # TODO: Make this config generic. Currently this configs are specific for

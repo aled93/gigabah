@@ -19,6 +19,8 @@ var icon_path: String = ICON_PATH_PATTERN % get_script().get_global_name():
 			icon_path_changed.emit()
 var requires_facing_target := true
 
+var _casting := false
+var _cast_start_tick_ms := 0
 ## Point in global space where caster pointing his cursor. Can be all NANs
 ## if cursor pointing not terrain or in UI
 var _target_point: Vector3
@@ -31,10 +33,10 @@ var _target_direction: Vector3
 signal cooldown_start()
 ## When cooldown value become zero
 signal cooldown_end()
-## Emits before calling ability's _cast
+## Emits after ability activated and before calling ability's _cast
 signal start_casting()
-## Emits after calling ability's _cast and it returned no error
-signal succesfully_casted()
+## Emits after calling ability's _cast
+signal cast_end(result: CastResult)
 signal icon_path_changed()
 
 
@@ -60,13 +62,13 @@ func cast() -> CastResult:
 
 	_pre_cast()
 
-	res = _cast()
-	if res != CastResult.OK:
-		return res
+	var cfg := _get_cast_config()
+	if cfg and cfg.cast_point > 0.0:
+		_casting = true
+		_cast_start_tick_ms = Time.get_ticks_msec()
+		return CastResult.CASTING
 
-	_post_cast()
-
-	return CastResult.OK
+	return _actual_cast()
 
 
 func set_cast_targets(
@@ -77,6 +79,15 @@ func set_cast_targets(
 	_target_point = point
 	_target_node = node
 	_target_direction = direction
+
+
+func _actual_cast() -> CastResult:
+	var res := _cast()
+	if res != CastResult.OK:
+		return res
+
+	_post_cast()
+	return CastResult.OK
 
 
 func _has_target_point() -> bool:
@@ -105,6 +116,9 @@ func _is_castable() -> CastResult:
 				if ang_diff > PI * 0.25:
 					return CastResult.ERROR_NOT_FACING_TARGET
 
+	if _casting:
+		return CastResult.ERROR_ALREADY_CASTING
+
 	return CastResult.OK
 
 
@@ -115,10 +129,19 @@ func _pre_cast() -> void:
 
 func _post_cast() -> void:
 	caster._cast_done(self)
-	succesfully_casted.emit()
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	if _casting:
+		var casting_duration := (Time.get_ticks_msec() - _cast_start_tick_ms) / 1000.0
+		var cfg := _get_cast_config()
+		if casting_duration >= cfg.cast_point:
+			_casting = false
+			_cast_start_tick_ms = 0
+
+			var res := _actual_cast()
+			cast_end.emit(res)
+
 	if cooldown > delta:
 		cooldown -= delta
 	else:
@@ -138,11 +161,13 @@ func _rpc_sync_cd(cd: float) -> void:
 
 enum CastResult {
 	OK,
+	CASTING,
 	ERROR_NO_CASTER,
 	ERROR_ON_COOLDOWN,
 	ERROR_NO_TARGET,
 	ERROR_TARGET_IS_FAR,
 	ERROR_NOT_FACING_TARGET,
+	ERROR_ALREADY_CASTING,
 }
 
 enum CastMethod {
