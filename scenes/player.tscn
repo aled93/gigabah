@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=3 uid="uid://dmp8nc3aenbut"]
+[gd_scene load_steps=54 format=3 uid="uid://dmp8nc3aenbut"]
 
 [ext_resource type="Script" uid="uid://coahpswxwi2pg" path="res://scripts/network_client.gd" id="1_qhqgy"]
 [ext_resource type="Script" uid="uid://c5687ukdvwk4m" path="res://scripts/input_controller.gd" id="2_f1ej7"]
@@ -19,7 +19,7 @@
 [ext_resource type="Script" uid="uid://bir3mt0uqkb3j" path="res://scripts/audio/player_voice_audio.gd" id="14_60mlk"]
 [ext_resource type="Script" uid="uid://cw41hh8xohvjm" path="res://scripts/camera_controller.gd" id="15_oprun"]
 [ext_resource type="AudioStream" uid="uid://ijijeipf8cwv" path="res://assets/audio/sfx/player_steps_sfx.tres" id="16_a8ls1"]
-[ext_resource type="Script" path="res://scripts/modifiers.gd" id="16_qfm1y"]
+[ext_resource type="Script" uid="uid://f2vns6ey3xkh" path="res://scripts/modifiers.gd" id="16_qfm1y"]
 [ext_resource type="Resource" uid="uid://c1jowsxyc18ua" path="res://scenes/resources/player_modifiables_map.tres" id="17_qfm1y"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_oprun"]
@@ -61,72 +61,13 @@ properties/0/spawn = true
 properties/0/replication_mode = 2
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_a8ls1"]
-properties/0/path = NodePath(".:parameters/Alive/BodyBottomGraph/conditions/grounded")
+properties/0/path = NodePath(".:parameters/Alive/WalkBlend/blend_position")
 properties/0/spawn = true
 properties/0/replication_mode = 2
-properties/1/path = NodePath(".:parameters/Alive/BodyBottomGraph/conditions/jumped")
-properties/1/spawn = true
-properties/1/replication_mode = 2
-properties/2/path = NodePath(".:parameters/Alive/BodyBottomGraph/WalkBlend/blend_position")
-properties/2/spawn = true
-properties/2/replication_mode = 2
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_g2els"]
 radius = 0.32714844
 height = 1.9589844
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qfm1y"]
-animation = &"Jump"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4r5pv"]
-animation = &"Land"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_60mlk"]
-animation = &"Idle"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_i4ail"]
-animation = &"Walk"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_a38lo"]
-animation = &"Walk"
-play_mode = 1
-
-[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_4ni07"]
-blend_point_0/node = SubResource("AnimationNodeAnimation_60mlk")
-blend_point_0/pos = 0.0
-blend_point_1/node = SubResource("AnimationNodeAnimation_i4ail")
-blend_point_1/pos = 1.0
-blend_point_2/node = SubResource("AnimationNodeAnimation_a38lo")
-blend_point_2/pos = -1.0
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_l71n6"]
-switch_mode = 2
-advance_mode = 2
-advance_condition = &"grounded"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ke2ow"]
-advance_mode = 2
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ujl30"]
-xfade_time = 0.1
-advance_mode = 2
-advance_condition = &"jumped"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_31cv2"]
-xfade_time = 0.2
-reset = false
-switch_mode = 2
-advance_mode = 2
-
-[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_pf23h"]
-states/Jump/node = SubResource("AnimationNodeAnimation_qfm1y")
-states/Jump/position = Vector2(365, 243)
-states/Land/node = SubResource("AnimationNodeAnimation_4r5pv")
-states/Land/position = Vector2(604, 243)
-states/WalkBlend/node = SubResource("AnimationNodeBlendSpace1D_4ni07")
-states/WalkBlend/position = Vector2(481, 100)
-transitions = ["Jump", "Land", SubResource("AnimationNodeStateMachineTransition_l71n6"), "Start", "WalkBlend", SubResource("AnimationNodeStateMachineTransition_ke2ow"), "WalkBlend", "Jump", SubResource("AnimationNodeStateMachineTransition_ujl30"), "Land", "WalkBlend", SubResource("AnimationNodeStateMachineTransition_31cv2")]
-graph_offset = Vector2(-7, -44)
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fulsm"]
 animation = &"Cast1"
@@ -142,10 +83,40 @@ input_0/name = "Cast3"
 input_0/auto_advance = false
 input_0/break_loop_at_end = false
 input_0/reset = true
+input_1/name = "Jump"
+input_1/auto_advance = false
+input_1/break_loop_at_end = false
+input_1/reset = true
 
 [sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_qfm1y"]
 fadein_time = 0.1
 fadeout_time = 0.1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_a38lo"]
+animation = &"Jump"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4ni07"]
+animation = &"Land"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_l71n6"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ke2ow"]
+advance_mode = 2
+advance_expression = "chanelling_done"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ujl30"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_pf23h"]
+states/Jump/node = SubResource("AnimationNodeAnimation_a38lo")
+states/Jump/position = Vector2(268, 100)
+states/Land/node = SubResource("AnimationNodeAnimation_4ni07")
+states/Land/position = Vector2(634, 100)
+states/Start/position = Vector2(56, 100)
+transitions = ["Start", "Jump", SubResource("AnimationNodeStateMachineTransition_l71n6"), "Jump", "Land", SubResource("AnimationNodeStateMachineTransition_ke2ow"), "Land", "End", SubResource("AnimationNodeStateMachineTransition_ujl30")]
+graph_offset = Vector2(-42, -133)
 
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_fulsm"]
 
@@ -169,11 +140,29 @@ filters = ["", "Armature/Skeleton3D:Arm.L", "Armature/Skeleton3D:Arm.R", "Armatu
 fadein_time = 0.1
 fadeout_time = 0.1
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_i4ail"]
+animation = &"Idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_l71n6"]
+animation = &"Walk"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ke2ow"]
+animation = &"Walk"
+play_mode = 1
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_ujl30"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_i4ail")
+blend_point_0/pos = 0.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_l71n6")
+blend_point_1/pos = 1.0
+blend_point_2/node = SubResource("AnimationNodeAnimation_ke2ow")
+blend_point_2/pos = -1.0
+
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_ujl30"]
-graph_offset = Vector2(-620.61475, -93.36322)
+graph_offset = Vector2(-1199.2894, -191.45294)
 nodes/output/position = Vector2(200, 140)
-nodes/BodyBottomGraph/node = SubResource("AnimationNodeStateMachine_pf23h")
-nodes/BodyBottomGraph/position = Vector2(-700, -360)
+nodes/FullBodyChanellingJump/node = SubResource("AnimationNodeStateMachine_pf23h")
+nodes/FullBodyChanellingJump/position = Vector2(-1080, 40)
 nodes/UpperBodyCasts/node = SubResource("AnimationNodeOneShot_4r5pv")
 nodes/UpperBodyCasts/position = Vector2(-100, -20)
 nodes/Cast1/node = SubResource("AnimationNodeAnimation_fulsm")
@@ -187,14 +176,16 @@ nodes/Cast2/position = Vector2(-700, 400)
 "nodes/TimeScale 2/node" = SubResource("AnimationNodeTimeScale_fulsm")
 "nodes/TimeScale 2/position" = Vector2(-520, 400)
 nodes/Cast3/node = SubResource("AnimationNodeAnimation_oprun")
-nodes/Cast3/position = Vector2(-1000, -80)
+nodes/Cast3/position = Vector2(-1200, -200)
 nodes/FullBodyCasts/node = SubResource("AnimationNodeOneShot_qfm1y")
 nodes/FullBodyCasts/position = Vector2(-300, -140)
 "nodes/TimeScale 3/node" = SubResource("AnimationNodeTimeScale_4r5pv")
-"nodes/TimeScale 3/position" = Vector2(-800, -80)
+"nodes/TimeScale 3/position" = Vector2(-1000, -200)
 nodes/FullBodyCastAnim/node = SubResource("AnimationNodeTransition_f1ej7")
 nodes/FullBodyCastAnim/position = Vector2(-500, -80)
-node_connections = [&"output", 0, &"UpperBodyCasts", &"UpperBodyCasts", 0, &"FullBodyCasts", &"UpperBodyCasts", 1, &"UpperBodyCastAnim", &"TimeScale", 0, &"Cast1", &"UpperBodyCastAnim", 0, &"TimeScale", &"UpperBodyCastAnim", 1, &"TimeScale 2", &"TimeScale 2", 0, &"Cast2", &"FullBodyCasts", 0, &"BodyBottomGraph", &"FullBodyCasts", 1, &"FullBodyCastAnim", &"TimeScale 3", 0, &"Cast3", &"FullBodyCastAnim", 0, &"TimeScale 3"]
+nodes/WalkBlend/node = SubResource("AnimationNodeBlendSpace1D_ujl30")
+nodes/WalkBlend/position = Vector2(-480, -320)
+node_connections = [&"output", 0, &"UpperBodyCasts", &"UpperBodyCasts", 0, &"FullBodyCasts", &"UpperBodyCasts", 1, &"UpperBodyCastAnim", &"TimeScale", 0, &"Cast1", &"UpperBodyCastAnim", 0, &"TimeScale", &"UpperBodyCastAnim", 1, &"TimeScale 2", &"TimeScale 2", 0, &"Cast2", &"FullBodyCasts", 0, &"WalkBlend", &"FullBodyCasts", 1, &"FullBodyCastAnim", &"TimeScale 3", 0, &"Cast3", &"FullBodyCastAnim", 0, &"TimeScale 3", &"FullBodyCastAnim", 1, &"FullBodyChanellingJump"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gl8cc"]
 advance_mode = 2
@@ -203,7 +194,7 @@ advance_mode = 2
 states/Alive/node = SubResource("AnimationNodeBlendTree_ujl30")
 states/Alive/position = Vector2(439, 100)
 transitions = ["Start", "Alive", SubResource("AnimationNodeStateMachineTransition_gl8cc")]
-graph_offset = Vector2(-7, -101)
+graph_offset = Vector2(-7, -53)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_3v2ag"]
 radius = 1.1026574
@@ -328,11 +319,8 @@ bones/29/position = Vector3(-1.1386778e-06, -8.6467907e-07, -1.2696355e-05)
 
 [node name="AnimationTree" type="AnimationTree" parent="Hero/PlayerModel"]
 tree_root = SubResource("AnimationNodeStateMachine_487ah")
-advance_expression_base_node = NodePath("../..")
+advance_expression_base_node = NodePath("../../AnimationsBase")
 anim_player = NodePath("../AnimationPlayer")
-parameters/Alive/BodyBottomGraph/conditions/grounded = false
-parameters/Alive/BodyBottomGraph/conditions/jumped = false
-parameters/Alive/BodyBottomGraph/WalkBlend/blend_position = 0.0
 parameters/Alive/UpperBodyCasts/active = false
 parameters/Alive/UpperBodyCasts/internal_active = false
 parameters/Alive/UpperBodyCasts/request = 0
@@ -341,13 +329,14 @@ parameters/Alive/UpperBodyCastAnim/current_state = "Cast1"
 parameters/Alive/UpperBodyCastAnim/transition_request = ""
 parameters/Alive/UpperBodyCastAnim/current_index = 0
 "parameters/Alive/TimeScale 2/scale" = 0.6499999999999986
-parameters/Alive/FullBodyCasts/active = false
-parameters/Alive/FullBodyCasts/internal_active = false
+parameters/Alive/FullBodyCasts/active = true
+parameters/Alive/FullBodyCasts/internal_active = true
 parameters/Alive/FullBodyCasts/request = 0
 "parameters/Alive/TimeScale 3/scale" = 0.75
-parameters/Alive/FullBodyCastAnim/current_state = "Cast3"
+parameters/Alive/FullBodyCastAnim/current_state = "Jump"
 parameters/Alive/FullBodyCastAnim/transition_request = ""
-parameters/Alive/FullBodyCastAnim/current_index = 0
+parameters/Alive/FullBodyCastAnim/current_index = 1
+parameters/Alive/WalkBlend/blend_position = 0.0
 
 [node name="FootStepsAudio" type="AudioStreamPlayer3D" parent="Hero/PlayerModel" node_paths=PackedStringArray("animation_player")]
 stream = ExtResource("16_a8ls1")

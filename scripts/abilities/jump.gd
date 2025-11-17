@@ -12,6 +12,10 @@ func _get_cast_method() -> CastMethod:
 	return Ability.CastMethod.POINT
 
 
+func _get_cast_config() -> AbilityCastConfig:
+	return null
+
+
 func _cast() -> CastResult:
 	if not _has_target_point():
 		return CastResult.ERROR_NO_TARGET

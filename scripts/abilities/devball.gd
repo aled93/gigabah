@@ -9,6 +9,10 @@ func _get_cast_method() -> CastMethod:
 	return Ability.CastMethod.DIRECTIONAL
 
 
+func _get_cast_config() -> AbilityCastConfig:
+	return preload("res://scenes/resources/ability_cast_configs/hand_cast.tres")
+
+
 func _cast() -> CastResult:
 	if not _has_target_direction():
 		return CastResult.ERROR_NO_TARGET

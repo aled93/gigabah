@@ -17,6 +17,8 @@ var icon_path: String = ICON_PATH_PATTERN % get_script().get_global_name():
 
 var expire_time := 0.0
 var destroy_on_expire := false
+## Assign to play animation when modifier active
+var animation_config: AbilityCastConfig
 var modified_properties: Dictionary[StringName, PropertyMod] = { }
 
 signal property_mod_changed(property_name: StringName, mod: PropertyMod, modifier: Modifier)

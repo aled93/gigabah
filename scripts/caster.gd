@@ -10,6 +10,7 @@ signal ability_added(ability_index: int)
 signal ability_removed(ability: Ability)
 ## Emits when all basic checks done but before calling ability's cast code
 signal start_casting(ability: Ability)
+signal end_casting(ability: Ability)
 ## Emits after ability's cast code executed and it returned OK
 signal successfully_casted(ability: Ability)
 
@@ -25,6 +26,14 @@ func get_ability(index: int) -> Ability:
 	if index >= 0 and index < _abilities.size():
 		return _abilities[index]
 	return null
+
+
+func get_ability_index(ability: Ability) -> int:
+	for i: int in range(_abilities.size()):
+		if _abilities[i] == ability:
+			return i
+
+	return -1
 
 
 func add_ability(ability: Ability) -> CasterResult:
@@ -76,6 +85,7 @@ func _cast_started(ability: Ability) -> void:
 
 func _cast_done(ability: Ability) -> void:
 	successfully_casted.emit(ability)
+	end_casting.emit(ability)
 
 
 func _on_ability_container_child_entered(node: Node) -> void:

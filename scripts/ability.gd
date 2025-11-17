@@ -42,6 +42,11 @@ signal icon_path_changed()
 @abstract func _get_cast_method() -> CastMethod
 
 
+## Override to play animation
+func _get_cast_config() -> AbilityCastConfig:
+	return null
+
+
 ## Main function of ability. Called when all checks done like cooldown,
 ## validating target, caster status.
 @abstract func _cast() -> CastResult

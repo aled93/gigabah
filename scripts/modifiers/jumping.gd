@@ -25,6 +25,7 @@ func _modifier_start() -> void:
 	expire_time = duration
 
 	icon_path = "res://assets/textures/ui/ability_icons/Jump.png"
+	animation_config = preload("res://scenes/resources/ability_cast_configs/jump.tres")
 
 
 func _physics_process(delta: float) -> void:
