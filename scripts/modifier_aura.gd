@@ -23,6 +23,9 @@ func _exit_tree() -> void:
 	area_entered.disconnect(_on_area_entered)
 	area_exited.disconnect(_on_area_exited)
 
+	for mod: Modifier in _affected.values():
+		mod.queue_free()
+
 
 func _on_area_entered(other: Area3D) -> void:
 	if other is not HitBox3D:
