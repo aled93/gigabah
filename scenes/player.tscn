@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://dmp8nc3aenbut"]
+[gd_scene load_steps=55 format=3 uid="uid://dmp8nc3aenbut"]
 
 [ext_resource type="Script" uid="uid://coahpswxwi2pg" path="res://scripts/network_client.gd" id="1_qhqgy"]
 [ext_resource type="Script" uid="uid://c5687ukdvwk4m" path="res://scripts/input_controller.gd" id="2_f1ej7"]
@@ -19,7 +19,7 @@
 [ext_resource type="Script" uid="uid://bir3mt0uqkb3j" path="res://scripts/audio/player_voice_audio.gd" id="14_60mlk"]
 [ext_resource type="Script" uid="uid://cw41hh8xohvjm" path="res://scripts/camera_controller.gd" id="15_oprun"]
 [ext_resource type="AudioStream" uid="uid://ijijeipf8cwv" path="res://assets/audio/sfx/player_steps_sfx.tres" id="16_a8ls1"]
-[ext_resource type="Script" uid="uid://f2vns6ey3xkh" path="res://scripts/modifiers.gd" id="16_qfm1y"]
+[ext_resource type="Script" path="res://scripts/modifiers.gd" id="16_qfm1y"]
 [ext_resource type="Resource" uid="uid://c1jowsxyc18ua" path="res://scenes/resources/player_modifiables_map.tres" id="17_qfm1y"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_oprun"]
