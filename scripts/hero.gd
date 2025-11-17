@@ -23,9 +23,19 @@ var facing_direction: Vector3:
 		new_basis.z = -val
 		model.global_basis = new_basis
 
+## Set this variable to desired angle and hero will turn into
+## this direction with his turn_rate. Every physics_process
+## this variables resets to NAN so update it every
+## physics_process to maintain turning
 var desired_facing_angle: float:
 	set(val):
 		desired_facing_angle = Utils.cycle_float(val, -PI, PI)
+
+var _moving_facing_angle: float:
+	set(val):
+		_moving_facing_angle = val
+		if not is_nan(val):
+			_moving_facing_angle = Utils.cycle_float(val, -PI, PI)
 
 var _local_peer := true
 var _prev_cast_mask := 0
@@ -82,22 +92,29 @@ func _physics_process(delta: float) -> void:
 			health.heal(regened_hp_int)
 			_hp_regen_accum -= float(regened_hp_int)
 
-
-func _process(delta: float) -> void:
-	if multiplayer.is_server():
 		if not input_controller.move_direction.is_zero_approx():
-			desired_facing_angle = input_controller.move_direction.angle()
+			_moving_facing_angle = input_controller.move_direction.angle()
+		else:
+			_moving_facing_angle = NAN
 
 		# turning
 		if not _prop_cant_turn.final_value:
-			var ang_diff := desired_facing_angle - facing_angle
-			ang_diff = Utils.cycle_float(ang_diff, -PI, PI)
-			var max_turn_ang := _prop_turn_rate.final_value * delta
-			if absf(ang_diff) <= max_turn_ang:
-				facing_angle = desired_facing_angle
-			else:
-				var turn_ang := max_turn_ang * signf(ang_diff)
-				facing_angle += turn_ang
+			var target_ang := desired_facing_angle
+			if is_nan(target_ang):
+				target_ang = _moving_facing_angle
+
+			if not is_nan(target_ang):
+				var ang_diff := target_ang - facing_angle
+				ang_diff = Utils.cycle_float(ang_diff, -PI, PI)
+
+				var max_turn_ang := _prop_turn_rate.final_value * delta
+				if absf(ang_diff) <= max_turn_ang:
+					facing_angle = target_ang
+				else:
+					var turn_ang := max_turn_ang * signf(ang_diff)
+					facing_angle += turn_ang
+
+			desired_facing_angle = NAN
 
 		# casting
 		if caster:
@@ -110,7 +127,15 @@ func _process(delta: float) -> void:
 					continue
 
 				var ability := caster.get_ability(cast_slot_idx)
-				if ability and not _prop_cant_cast.final_value:
+				if not ability:
+					continue
+
+				if ability.requires_facing_target:
+					if not is_nan(input_controller.cursor_world_pos.x):
+						var dir := input_controller.cursor_world_pos - global_position
+						desired_facing_angle = Vector2(dir.x, dir.z).normalized().angle()
+
+				if not _prop_cant_cast.final_value:
 					_cast_ability(ability)
 
 
