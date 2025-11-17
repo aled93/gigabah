@@ -17,6 +17,7 @@ var icon_path: String = ICON_PATH_PATTERN % get_script().get_global_name():
 		if val != icon_path:
 			icon_path = val
 			icon_path_changed.emit()
+var requires_facing_target := true
 
 ## Point in global space where caster pointing his cursor. Can be all NANs
 ## if cursor pointing not terrain or in UI
@@ -97,6 +98,13 @@ func _is_castable() -> CastResult:
 	if cooldown > 0.0:
 		return CastResult.ERROR_ON_COOLDOWN
 
+	if requires_facing_target:
+		match _get_cast_method():
+			CastMethod.DIRECTIONAL, CastMethod.POINT, CastMethod.TARGETED:
+				var ang_diff := _target_direction.angle_to(caster.hero.facing_direction)
+				if ang_diff > PI * 0.25:
+					return CastResult.ERROR_NOT_FACING_TARGET
+
 	return CastResult.OK
 
 
@@ -134,6 +142,7 @@ enum CastResult {
 	ERROR_ON_COOLDOWN,
 	ERROR_NO_TARGET,
 	ERROR_TARGET_IS_FAR,
+	ERROR_NOT_FACING_TARGET,
 }
 
 enum CastMethod {
