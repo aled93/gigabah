@@ -15,6 +15,14 @@ var facing_angle: float:
 		new_rot.y = -val - PI * 0.5
 		model.global_rotation = new_rot
 
+var facing_direction: Vector3:
+	get:
+		return -model.global_basis.z
+	set(val):
+		var new_basis := model.global_basis
+		new_basis.z = -val
+		model.global_basis = new_basis
+
 var desired_facing_angle: float:
 	set(val):
 		desired_facing_angle = Utils.cycle_float(val, -PI, PI)
