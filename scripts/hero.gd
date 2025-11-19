@@ -49,6 +49,7 @@ var _hp_regen_accum := 0.0
 @onready var _prop_cant_turn := modifiers.get_bool_property(&"cant_turn")
 @onready var _prop_cant_cast := modifiers.get_bool_property(&"cant_cast")
 @onready var _prop_hp_regen := modifiers.get_float_property(&"hp_regen")
+@onready var _prop_no_gravity := modifiers.get_bool_property(&"no_gravity")
 
 
 func _ready() -> void:
@@ -66,7 +67,8 @@ func _exit_tree() -> void:
 func _physics_process(delta: float) -> void:
 	if multiplayer.is_server():
 		# Add the gravity.
-		velocity += get_gravity() * delta
+		if not _prop_no_gravity.final_value:
+			velocity += get_gravity() * delta
 
 		if _prop_cant_move.final_value or input_controller.move_direction.is_zero_approx():
 			if is_on_floor():
