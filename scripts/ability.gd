@@ -114,7 +114,9 @@ func _is_castable() -> CastResult:
 	if requires_facing_target:
 		match _get_cast_method():
 			CastMethod.DIRECTIONAL, CastMethod.POINT, CastMethod.TARGETED:
-				var ang_diff := _target_direction.angle_to(caster.hero.facing_direction)
+				var target_dir_2d := _target_direction * Vector3(1.0, 0.0, 1.0)
+				var facing_dir_2d := caster.hero.facing_direction * Vector3(1.0, 0.0, 1.0)
+				var ang_diff := target_dir_2d.angle_to(facing_dir_2d)
 				if ang_diff > PI * 0.25:
 					return CastResult.ERROR_NOT_FACING_TARGET
 
