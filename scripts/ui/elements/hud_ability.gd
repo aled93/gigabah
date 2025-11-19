@@ -1,5 +1,7 @@
 class_name HUDAbility
-extends Node
+extends Control
+
+@export var tooltip_scene := preload("res://scenes/ui/elements/ability_tooltip.tscn")
 
 @export var ability: Ability:
 	set(val):
@@ -93,3 +95,15 @@ func _update_visual(delta: float = 0.0) -> void:
 
 func _process(delta: float) -> void:
 	_update_visual(delta)
+
+
+func _make_custom_tooltip(_for_text: String) -> Object:
+	var tooltip := tooltip_scene.instantiate() as AbilityTooltip
+	tooltip.ability = ability
+
+	var tooltip_position := tooltip as TooltipPosition
+	tooltip_position.source_control = self
+	tooltip_position.tooltip_side = SIDE_TOP
+	tooltip_position.spacing = 5
+
+	return tooltip
