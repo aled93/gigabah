@@ -167,6 +167,7 @@ func _recalc_property(prop_name: StringName) -> void:
 	assert(prop_scheme, "attempt to modify unknown modifiable property '%s'" % prop_name)
 
 	prop.untyped_final_value = prop_scheme.calculate_value(prop.mods)
+	prop.changed.emit()
 
 	if multiplayer.is_server():
 		NetSync.rpc_to_observing_peers(
@@ -243,9 +244,13 @@ func _rpc_property_final_value(prop_name_hash: int, prop_value: Variant) -> void
 	var prop_name := modifiable_properties.get_property_name_by_hash(prop_name_hash)
 	assert(prop_name != null, "Server sent unknown hash of property name")
 
-	_get_or_create_prop(prop_name).untyped_final_value = prop_value
+	var prop := _get_or_create_prop(prop_name)
+	prop.untyped_final_value = prop_value
+	prop.changed.emit()
 
 
 class Property:
 	var untyped_final_value: Variant
 	var mods: Array[Modifier.PropertyMod] = []
+
+	signal changed()
