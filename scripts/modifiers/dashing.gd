@@ -33,3 +33,4 @@ func _physics_process(delta: float) -> void:
 
 	if _traveled >= distance:
 		queue_free()
+		carrier.velocity = Vector3.ZERO
