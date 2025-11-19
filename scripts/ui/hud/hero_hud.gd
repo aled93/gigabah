@@ -109,7 +109,7 @@ func _update_visual(_delta: float) -> void:
 		health_num.text = "%d/%d" % [hero.health.current_health, hero.health.max_health]
 
 	if _prop_hp_regen:
-		health_regen_num.text = "%.1f" % _prop_hp_regen.final_value
+		health_regen_num.text = "%+.1f" % _prop_hp_regen.final_value
 	else:
 		health_regen_num.text = "0"
 
