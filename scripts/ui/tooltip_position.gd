@@ -16,6 +16,7 @@ func _ready() -> void:
 		return
 
 	var popup := parent as PopupPanel
+	popup.size_changed.connect(_on_popup_size_changed)
 	call_deferred(&"_set_popup_position", popup)
 
 
@@ -50,3 +51,8 @@ func _set_popup_position(popup: PopupPanel) -> void:
 			popup.position.x = int(src_rect.position.x)
 			popup.position.x += int(src_rect.size.x)
 			popup.position.x += spacing
+
+
+func _on_popup_size_changed() -> void:
+	var popup := get_parent() as PopupPanel
+	_set_popup_position(popup)
