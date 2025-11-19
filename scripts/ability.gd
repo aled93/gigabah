@@ -68,7 +68,9 @@ func cast() -> CastResult:
 		_cast_start_tick_ms = Time.get_ticks_msec()
 		return CastResult.CASTING
 
-	return _actual_cast()
+	var result := _actual_cast()
+	NetSync.rpc_to_observing_peers(self, _rpc_emit_cast_end, [result])
+	return result
 
 
 func set_cast_targets(
@@ -125,6 +127,7 @@ func _is_castable() -> CastResult:
 func _pre_cast() -> void:
 	caster._cast_started(self)
 	start_casting.emit()
+	NetSync.rpc_to_observing_peers(self, _rpc_emit_start_casting, [])
 
 
 func _post_cast() -> void:
@@ -141,6 +144,7 @@ func _physics_process(delta: float) -> void:
 
 			var res := _actual_cast()
 			cast_end.emit(res)
+			NetSync.rpc_to_observing_peers(self, _rpc_emit_cast_end, [res])
 
 	if cooldown > delta:
 		cooldown -= delta
@@ -157,6 +161,16 @@ func _sync_cd() -> void:
 @rpc("authority", "call_remote", "reliable")
 func _rpc_sync_cd(cd: float) -> void:
 	cooldown = cd
+
+
+@rpc("authority", "call_remote", "reliable")
+func _rpc_emit_start_casting() -> void:
+	start_casting.emit()
+
+
+@rpc("authority", "call_remote", "reliable")
+func _rpc_emit_cast_end(result: CastResult) -> void:
+	cast_end.emit(result)
 
 
 enum CastResult {

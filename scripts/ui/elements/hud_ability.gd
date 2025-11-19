@@ -16,16 +16,41 @@ extends Node
 @onready var ability_icon: TextureRect = %AbilityIcon
 @onready var cooldown_bar: TextureProgressBar = %CooldownBar
 @onready var cooldown_num: Label = %CooldownNumber
+@onready var casting_bar: TextureProgressBar = %CastingBar
 
 var _prev_cd := 0.0
+var _casting := false
 
 
 func _link_ability() -> void:
 	ability.icon_path_changed.connect(_set_icon_texture)
+	ability.start_casting.connect(_on_start_casting)
+	ability.cast_end.connect(_on_end_casting)
 
 
 func _unlink_ability() -> void:
 	ability.icon_path_changed.disconnect(_set_icon_texture)
+	ability.start_casting.disconnect(_on_start_casting)
+	ability.cast_end.disconnect(_on_end_casting)
+
+
+func _on_start_casting() -> void:
+	var cfg := ability._get_cast_config()
+	if cfg:
+		casting_bar.max_value = cfg.cast_point
+		casting_bar.value = 0.0
+		casting_bar.visible = true
+
+	_casting = true
+
+
+func _on_end_casting(result: Ability.CastResult) -> void:
+	var cfg := ability._get_cast_config()
+	if cfg:
+		casting_bar.value = 0.0
+		casting_bar.visible = false
+
+	_casting = false
 
 
 func _set_icon_texture() -> void:
@@ -42,7 +67,7 @@ func _set_icon_texture() -> void:
 	ability_icon.texture = res as Texture2D
 
 
-func _update_visual() -> void:
+func _update_visual(delta: float = 0.0) -> void:
 	if not ability or multiplayer.is_server():
 		return
 
@@ -61,6 +86,10 @@ func _update_visual() -> void:
 		cooldown_bar.visible = false
 		cooldown_num.visible = false
 
+	var cfg := ability._get_cast_config()
+	if cfg and _casting:
+		casting_bar.value += delta
 
-func _process(_delta: float) -> void:
-	_update_visual()
+
+func _process(delta: float) -> void:
+	_update_visual(delta)
