@@ -11,14 +11,12 @@ extends Node
 ]
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	multiplayer.peer_connected.connect(spawn_player)
 	multiplayer.peer_disconnected.connect(despawn_player)
 
 
 func spawn_player(id: int) -> void:
-	"""Spawns a player node for the given peer ID, with server authority."""
 	if !multiplayer.is_server():
 		return
 	var player: Node = player_scene.instantiate()
@@ -46,7 +44,6 @@ func spawn_player(id: int) -> void:
 
 
 func despawn_player(id: int) -> void:
-	"""Removes the player node for the given peer ID."""
 	if !multiplayer.is_server():
 		return
 	var player: Node = get_node(spawn_path).get_node(str(id))
