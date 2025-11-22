@@ -67,7 +67,10 @@ func _on_area_exited(other: Area3D) -> void:
 
 
 func _on_hitbox_tree_exiting(hitbox: HitBox3D) -> void:
-	var modifier_on_hero := _affected[hitbox.hero]
+	var modifier_on_hero: Variant = _affected.get(hitbox.hero)
+	if not modifier_on_hero:
+		return
+
 	modifier_on_hero.queue_free()
 	_affected.erase(hitbox.hero)
 	_tree_exiting_binds.erase(hitbox.hero)
