@@ -31,6 +31,11 @@ func _enter_tree() -> void:
 		local = self
 
 
+func _on_pawn_tree_exiting() -> void:
+	# trigger _detach_pawn
+	pawn = null
+
+
 func _attach_pawn() -> void:
 	pawn.input_controller = input_controller
 
@@ -52,6 +57,8 @@ func _attach_pawn() -> void:
 
 	pawn.player = self
 
+	pawn.tree_exiting.connect(_on_pawn_tree_exiting)
+
 
 func _detach_pawn() -> void:
 	pawn.input_controller = null
@@ -72,6 +79,8 @@ func _detach_pawn() -> void:
 		NetSync.rpc_to_observing_peers(self, _rpc_detach_pawn, [])
 
 	pawn.player = null
+
+	pawn.tree_exiting.disconnect(_on_pawn_tree_exiting)
 
 
 func network_serialize() -> Variant:
