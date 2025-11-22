@@ -43,12 +43,12 @@ func _attach_pawn() -> void:
 		if HeroHUD.instance:
 			HeroHUD.instance.hero = pawn
 
-		var cam := pawn.get_node("%Camera") as Camera3D
+		var cam := pawn.find_child("Camera") as Camera3D
 		if cam:
 			cam.make_current()
 			input_controller.camera = cam
 
-	var netvis_area := pawn.get_node("%NetworkVisionArea3D") as NetworkVisionArea3D
+	var netvis_area := pawn.find_child("NetworkVisionArea3D") as NetworkVisionArea3D
 	if netvis_area:
 		netvis_area.vision_owner_peer_id = peer_id
 
@@ -67,11 +67,12 @@ func _detach_pawn() -> void:
 		if HeroHUD.instance:
 			HeroHUD.instance.hero = null
 
-		var cam := pawn.get_node("%Camera") as Camera3D
+		var cam := pawn.find_child("Camera") as Camera3D
 		if cam:
 			cam.clear_current(false)
 
-	var netvis_area := pawn.get_node("%NetworkVisionArea3D") as NetworkVisionArea3D
+	pawn.print_tree_pretty()
+	var netvis_area := pawn.find_child("NetworkVisionArea3D") as NetworkVisionArea3D
 	if netvis_area:
 		netvis_area.vision_owner_peer_id = 0
 
