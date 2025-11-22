@@ -13,10 +13,9 @@ class_name InputController
 @export var cursor_raycast: RayCast3D
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var peer_id := owner.name.to_int()
-	set_multiplayer_authority(peer_id, false)
+	var client := owner as NetworkClient
+	set_multiplayer_authority(client.peer_id, false)
 	set_visibility_for(1, true)
 
 
@@ -25,7 +24,12 @@ func _process(_delta: float) -> void:
 		return
 
 	if is_multiplayer_authority():
-		var new_move_direction: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
+		var new_move_direction: Vector2 = Input.get_vector(
+			"move_left",
+			"move_right",
+			"move_forward",
+			"move_backward",
+		)
 
 		if camera:
 			new_move_direction = new_move_direction.rotated(-camera.global_rotation.y)

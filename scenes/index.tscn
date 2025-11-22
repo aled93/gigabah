@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://bde2flq2egpcv"]
+[gd_scene load_steps=11 format=3 uid="uid://bde2flq2egpcv"]
 
 [ext_resource type="Script" uid="uid://f0ylqu4wka2x" path="res://scripts/player_spawner.gd" id="2_hhnvu"]
-[ext_resource type="PackedScene" uid="uid://dmp8nc3aenbut" path="res://scenes/player.tscn" id="3_8s3bs"]
+[ext_resource type="PackedScene" uid="uid://ch7krks0kcmwx" path="res://scenes/player.tscn" id="2_vc6rt"]
+[ext_resource type="PackedScene" uid="uid://dmp8nc3aenbut" path="res://scenes/player_pawn.tscn" id="3_8s3bs"]
 [ext_resource type="PackedScene" uid="uid://fyvnqbdfgw0q" path="res://scenes/Testing_arena.tscn" id="5_8s3bs"]
 [ext_resource type="PackedScene" uid="uid://dxtxfb21jpq0" path="res://scenes/ui/in_game_menu.tscn" id="5_ingamemenu"]
 [ext_resource type="PackedScene" uid="uid://ytyta0dtvgah" path="res://scenes/crystal_aura.tscn" id="6_khbhx"]
@@ -15,8 +16,10 @@
 
 [node name="PlayerSpawner" type="Node" parent="."]
 script = ExtResource("2_hhnvu")
-spawn_path = NodePath("..")
-player_scene = ExtResource("3_8s3bs")
+player_spawn_path = NodePath(".")
+pawn_spawn_path = NodePath("..")
+player_scene = ExtResource("2_vc6rt")
+pawn_scene = ExtResource("3_8s3bs")
 metadata/_custom_type_script = "uid://f0ylqu4wka2x"
 
 [node name="InGameMenu" parent="." instance=ExtResource("5_ingamemenu")]

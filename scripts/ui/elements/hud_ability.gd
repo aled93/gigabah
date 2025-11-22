@@ -46,7 +46,7 @@ func _on_start_casting() -> void:
 	_casting = true
 
 
-func _on_end_casting(result: Ability.CastResult) -> void:
+func _on_end_casting(_result: Ability.CastResult) -> void:
 	var cfg := ability._get_cast_config()
 	if cfg:
 		casting_bar.value = 0.0

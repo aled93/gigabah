@@ -1,14 +1,18 @@
 class_name PlayerSpawner
 extends Node
 
-@export var spawn_path: NodePath
+@export var player_spawn_path: NodePath
+@export var pawn_spawn_path: NodePath
 @export var player_scene: PackedScene
+@export var pawn_scene: PackedScene
 @export var default_abilities: Array[PackedScene] = [
 	preload("res://scenes/abilities/devball.tscn"),
 	preload("res://scenes/abilities/inner_spirit.tscn"),
 	preload("res://scenes/abilities/dash.tscn"),
 	preload("res://scenes/abilities/jump.tscn"),
 ]
+
+var _players: Dictionary[int, NetworkClient] = { }
 
 
 func _ready() -> void:
@@ -19,45 +23,51 @@ func _ready() -> void:
 func spawn_player(id: int) -> void:
 	if !multiplayer.is_server():
 		return
-	var player: Node = player_scene.instantiate()
+
+	var player := player_scene.instantiate() as NetworkClient
 	player.name = str(id)
-	player.set_multiplayer_authority(1) # Ensure server authority
-	var hero := player.get_node("Hero") as Hero
-	hero.position.x = randf_range(-5, 5)
-	hero.position.y = 0
-	hero.position.z = randf_range(-10, 0)
-	get_node(spawn_path).add_child(player)
+	player.peer_id = id # FIXME: multiplayer is null in setter
 
-	var hp := hero.find_child("NetworkHp", true) as NetworkHP
-	if hp:
-		hp.health_depleted.connect(respawn_client.bind(player as NetworkClient))
+	_players[id] = player
 
-	var caster := hero.caster
+	var pawn := pawn_scene.instantiate() as Hero
+	pawn.name = "pawn_%d" % pawn.get_instance_id()
+	# TODO: implement spawn points
+	pawn.position.x = randf_range(-5, 5)
+	pawn.position.y = 2.0
+	pawn.position.z = randf_range(-10, 0)
+
+	get_node(player_spawn_path).add_child(player)
+	get_node(pawn_spawn_path).add_child(pawn)
+
+	NetSync.set_visibility_for(id, player, true)
+	player.pawn = pawn
+
+	pawn.health.health_depleted.connect(respawn_client.bind(player))
+
+	var caster := pawn.caster
 	for ability_scene: PackedScene in default_abilities:
 		var ability := ability_scene.instantiate()
 		caster.get_node(caster.abilities_container).add_child(ability)
 		caster.add_ability(ability)
 
-	hero.modifiers.add_modifier(HeroBaseModifier.new())
-
-	NetSync.set_visibility_for(id, player, true)
+	pawn.modifiers.add_modifier(HeroBaseModifier.new())
 
 
 func despawn_player(id: int) -> void:
 	if !multiplayer.is_server():
 		return
-	var player: Node = get_node(spawn_path).get_node(str(id))
-	if player:
-		player.queue_free()
+
+	var player := _players[id]
+	player.queue_free()
+	_players.erase(id)
 
 
 func respawn_client(client: NetworkClient) -> void:
-	var hero: CharacterBody3D = client.get_node("Hero") as CharacterBody3D
+	var pawn := client.pawn
 
-	hero.position.x = randf_range(-5, 5)
-	hero.position.y = 0
-	hero.position.z = randf_range(-10, 0)
+	pawn.position.x = randf_range(-5, 5)
+	pawn.position.y = 2.0
+	pawn.position.z = randf_range(-10, 0)
 
-	var hp := hero.find_child("NetworkHp", true) as NetworkHP
-	if hp:
-		hp.current_health = 50
+	pawn.health.current_health = 50

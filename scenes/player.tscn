@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://ch7krks0kcmwx"]
+
+[ext_resource type="Script" uid="uid://coahpswxwi2pg" path="res://scripts/network_client.gd" id="1_g2els"]
+[ext_resource type="Script" uid="uid://c5687ukdvwk4m" path="res://scripts/input_controller.gd" id="2_qhqgy"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_dqkch"]
+properties/0/path = NodePath("InputController:move_direction")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath("InputController:cast_mask")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath("InputController:cursor_world_pos")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+
+[node name="Player" type="Node" node_paths=PackedStringArray("input_controller")]
+script = ExtResource("1_g2els")
+input_controller = NodePath("InputController")
+
+[node name="InputController" type="MultiplayerSynchronizer" parent="." node_paths=PackedStringArray("cursor_raycast")]
+replication_config = SubResource("SceneReplicationConfig_dqkch")
+script = ExtResource("2_qhqgy")
+cursor_world_pos = Vector3(nan, nan, nan)
+cursor_raycast = NodePath("../CursorRaycast")
+
+[node name="CursorRaycast" type="RayCast3D" parent="."]
+target_position = Vector3(6.945, 23.925, 6.02)
+debug_shape_custom_color = Color(1, 0, 0, 1)
+debug_shape_thickness = 1

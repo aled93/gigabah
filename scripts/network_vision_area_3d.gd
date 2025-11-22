@@ -48,7 +48,7 @@ func _on_area_exited(area: Area3D) -> void:
 
 
 func _try_set_vision_for(node: Node, vision: bool) -> void:
-	if !node:
+	if not node or vision_owner_peer_id == 0:
 		return
 
 	if node.owner:

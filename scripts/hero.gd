@@ -37,7 +37,6 @@ var _moving_facing_angle: float:
 		if not is_nan(val):
 			_moving_facing_angle = Utils.cycle_float(val, -PI, PI)
 
-var _local_peer := true
 var _prev_cast_mask := 0
 var _prev_is_on_floor := false
 var _hp_regen_accum := 0.0
@@ -52,37 +51,29 @@ var _hp_regen_accum := 0.0
 @onready var _prop_no_gravity := modifiers.get_bool_property(&"no_gravity")
 
 
-func _ready() -> void:
-	_local_peer = owner.name.to_int() == multiplayer.get_unique_id()
-
-	if _local_peer and HeroHUD.instance:
-		HeroHUD.instance.hero = self
-
-
-func _exit_tree() -> void:
-	if _local_peer and HeroHUD.instance and HeroHUD.instance.hero == self:
-		HeroHUD.instance.hero = null
-
-
 func _physics_process(delta: float) -> void:
 	if multiplayer.is_server():
 		# Add the gravity.
 		if not _prop_no_gravity.final_value:
 			velocity += get_gravity() * delta
 
-		if _prop_cant_move.final_value or input_controller.move_direction.is_zero_approx():
+		var move_dir := Vector2.ZERO
+		if input_controller:
+			move_dir = input_controller.move_direction
+
+		if _prop_cant_move.final_value or move_dir.is_zero_approx():
 			if is_on_floor():
 				velocity = Vector3.ZERO
 		else:
 			var speed := _prop_move_speed.final_value
 
-			var input_dir_ang := input_controller.move_direction.angle()
+			var input_dir_ang := move_dir.angle()
 			var ang_diff := Utils.cycle_float(input_dir_ang - facing_angle, -PI, PI)
 			if absf(ang_diff) > PI * 0.5:
 				speed *= _prop_reverse_speed_factor.final_value
 
-			velocity.x = input_controller.move_direction.x * speed
-			velocity.z = input_controller.move_direction.y * speed
+			velocity.x = move_dir.x * speed
+			velocity.z = move_dir.y * speed
 
 		_prev_is_on_floor = is_on_floor()
 		move_and_slide()
@@ -94,8 +85,8 @@ func _physics_process(delta: float) -> void:
 			health.heal(regened_hp_int)
 			_hp_regen_accum -= float(regened_hp_int)
 
-		if not input_controller.move_direction.is_zero_approx():
-			_moving_facing_angle = input_controller.move_direction.angle()
+		if not move_dir.is_zero_approx():
+			_moving_facing_angle = move_dir.angle()
 		else:
 			_moving_facing_angle = NAN
 
@@ -120,9 +111,15 @@ func _physics_process(delta: float) -> void:
 
 		# casting
 		if caster:
-			var pressed_cast_mask := input_controller.cast_mask
+			var pressed_cast_mask := 0
+			if input_controller:
+				pressed_cast_mask = input_controller.cast_mask
 			# var just_pressed_cast_mask := pressed_cast_mask & ~_prev_cast_mask
 			_prev_cast_mask = pressed_cast_mask
+
+			var cursor_world_pos := Vector3(NAN, NAN, NAN)
+			if input_controller:
+				cursor_world_pos = input_controller.cursor_world_pos
 
 			for cast_slot_idx: int in range(4):
 				if (pressed_cast_mask & (1 << cast_slot_idx)) == 0:
@@ -133,8 +130,8 @@ func _physics_process(delta: float) -> void:
 					continue
 
 				if ability.requires_facing_target:
-					if not is_nan(input_controller.cursor_world_pos.x):
-						var dir := input_controller.cursor_world_pos - global_position
+					if not is_nan(cursor_world_pos.x):
+						var dir := cursor_world_pos - global_position
 						desired_facing_angle = Vector2(dir.x, dir.z).normalized().angle()
 
 				if not _prop_cant_cast.final_value:
@@ -143,7 +140,7 @@ func _physics_process(delta: float) -> void:
 
 func _cast_ability(ability: Ability) -> void:
 	var dir := Vector3(NAN, NAN, NAN)
-	if not is_nan(input_controller.cursor_world_pos.x):
+	if input_controller and not is_nan(input_controller.cursor_world_pos.x):
 		dir = (input_controller.cursor_world_pos - global_position).normalized()
 
 	ability.set_cast_targets(
