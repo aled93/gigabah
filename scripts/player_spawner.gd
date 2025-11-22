@@ -37,12 +37,6 @@ func spawn_player(id: int) -> void:
 	NetSync.set_visibility_for(id, player, true)
 	player.pawn = pawn
 
-	var caster := pawn.caster
-	for ability_scene: PackedScene in default_abilities:
-		var ability := ability_scene.instantiate()
-		caster.get_node(caster.abilities_container).add_child(ability)
-		caster.add_ability(ability)
-
 
 func despawn_player(id: int) -> void:
 	if !multiplayer.is_server():
@@ -70,6 +64,12 @@ func _create_pawn_for_player(player: Player) -> Hero:
 	pawn.health.health_depleted.connect(_on_player_hp_depleted.bind(player))
 
 	pawn.modifiers.add_modifier(HeroBaseModifier.new())
+
+	var caster := pawn.caster
+	for ability_scene: PackedScene in default_abilities:
+		var ability := ability_scene.instantiate()
+		caster.get_node(caster.abilities_container).add_child(ability)
+		caster.add_ability(ability)
 
 	return pawn
 
