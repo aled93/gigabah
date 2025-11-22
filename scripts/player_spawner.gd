@@ -62,6 +62,9 @@ func despawn_player(id: int) -> void:
 	player.queue_free()
 	_players.erase(id)
 
+	if is_instance_valid(player.pawn):
+		player.pawn.queue_free()
+
 
 func respawn_client(client: Player) -> void:
 	var pawn := client.pawn
