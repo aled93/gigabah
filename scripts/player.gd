@@ -17,12 +17,12 @@ var pawn: Hero:
 		if pawn:
 			_detach_pawn()
 
-		if multiplayer.is_server():
-			NetSync.set_visibility_for(peer_id, val, true)
-
 		pawn = val
 
 		if pawn:
+			if multiplayer.is_server():
+				NetSync.set_visibility_for(peer_id, pawn, true)
+
 			_attach_pawn()
 
 
