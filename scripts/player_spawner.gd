@@ -12,7 +12,7 @@ extends Node
 	preload("res://scenes/abilities/jump.tscn"),
 ]
 
-var _players: Dictionary[int, NetworkClient] = { }
+var _players: Dictionary[int, Player] = { }
 
 
 func _ready() -> void:
@@ -24,7 +24,7 @@ func spawn_player(id: int) -> void:
 	if !multiplayer.is_server():
 		return
 
-	var player := player_scene.instantiate() as NetworkClient
+	var player := player_scene.instantiate() as Player
 	player.name = str(id)
 	player.peer_id = id # FIXME: multiplayer is null in setter
 
@@ -63,7 +63,7 @@ func despawn_player(id: int) -> void:
 	_players.erase(id)
 
 
-func respawn_client(client: NetworkClient) -> void:
+func respawn_client(client: Player) -> void:
 	var pawn := client.pawn
 
 	pawn.position.x = randf_range(-5, 5)

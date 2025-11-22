@@ -14,7 +14,7 @@ class_name InputController
 
 
 func _ready() -> void:
-	var client := owner as NetworkClient
+	var client := owner as Player
 	set_multiplayer_authority(client.peer_id, false)
 	set_visibility_for(1, true)
 

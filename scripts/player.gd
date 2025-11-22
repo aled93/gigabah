@@ -1,8 +1,7 @@
+class_name Player
 extends Node
 
-class_name NetworkClient
-
-static var local: NetworkClient
+static var local: Player
 
 @export var input_controller: InputController
 

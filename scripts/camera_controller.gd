@@ -27,7 +27,7 @@ var _mouse_prev_pos := Vector2.ZERO
 
 
 func _ready() -> void:
-	var cl := owner as NetworkClient
+	var cl := owner as Player
 	if cl and cl.name.to_int() != multiplayer.get_unique_id():
 		_local_client = false
 		set_process_input(false)
