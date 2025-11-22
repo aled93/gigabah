@@ -1,7 +1,5 @@
-[gd_scene load_steps=54 format=3 uid="uid://dmp8nc3aenbut"]
+[gd_scene load_steps=51 format=3 uid="uid://dmp8nc3aenbut"]
 
-[ext_resource type="Script" uid="uid://coahpswxwi2pg" path="res://scripts/network_client.gd" id="1_qhqgy"]
-[ext_resource type="Script" uid="uid://c5687ukdvwk4m" path="res://scripts/input_controller.gd" id="2_f1ej7"]
 [ext_resource type="Script" uid="uid://6lrnaqun6n63" path="res://scripts/hero.gd" id="2_jej6c"]
 [ext_resource type="Script" uid="uid://1cdf55yjte8h" path="res://scripts/components/network_transform.gd" id="3_3v2ag"]
 [ext_resource type="Script" uid="uid://l73tv27hnjlc" path="res://scripts/components/network_animation_state.gd" id="4_3v2ag"]
@@ -21,20 +19,6 @@
 [ext_resource type="AudioStream" uid="uid://ijijeipf8cwv" path="res://assets/audio/sfx/player_steps_sfx.tres" id="16_a8ls1"]
 [ext_resource type="Script" uid="uid://f2vns6ey3xkh" path="res://scripts/modifiers.gd" id="16_qfm1y"]
 [ext_resource type="Resource" uid="uid://c1jowsxyc18ua" path="res://scenes/resources/player_modifiables_map.tres" id="17_qfm1y"]
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_oprun"]
-properties/0/path = NodePath("InputController:move_direction")
-properties/0/spawn = true
-properties/0/replication_mode = 2
-properties/1/path = NodePath("InputController:jump_input")
-properties/1/spawn = true
-properties/1/replication_mode = 2
-properties/2/path = NodePath("InputController:cast_mask")
-properties/2/spawn = true
-properties/2/replication_mode = 2
-properties/3/path = NodePath("InputController:cursor_world_pos")
-properties/3/spawn = true
-properties/3/replication_mode = 2
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_jej6c"]
 properties/0/path = NodePath("Components/NetworkTransform:server_position")
@@ -204,38 +188,16 @@ radius = 20.0
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fulsm"]
 
-[node name="NetworkClient" type="Node" node_paths=PackedStringArray("camera", "vision_area")]
-script = ExtResource("1_qhqgy")
-camera = NodePath("Camera3D")
-vision_area = NodePath("Hero/NetworkVisionArea3D")
-
-[node name="InputController" type="MultiplayerSynchronizer" parent="." node_paths=PackedStringArray("camera", "cursor_raycast")]
-replication_interval = 0.02
-delta_interval = 0.02
-replication_config = SubResource("SceneReplicationConfig_oprun")
-public_visibility = false
-script = ExtResource("2_f1ej7")
-cursor_world_pos = Vector3(nan, nan, nan)
-camera = NodePath("../Camera3D")
-cursor_raycast = NodePath("CursorRaycast")
-metadata/_custom_type_script = "uid://c5687ukdvwk4m"
-
-[node name="CursorRaycast" type="RayCast3D" parent="InputController"]
-target_position = Vector3(6.945, 23.925, 6.02)
-debug_shape_custom_color = Color(1, 0, 0, 1)
-debug_shape_thickness = 1
-
-[node name="Hero" type="CharacterBody3D" parent="." node_paths=PackedStringArray("input_controller", "health", "caster", "modifiers", "model")]
+[node name="Hero" type="CharacterBody3D" node_paths=PackedStringArray("health", "caster", "modifiers", "model")]
 script = ExtResource("2_jej6c")
-input_controller = NodePath("../InputController")
 health = NodePath("Components/NetworkHp")
 caster = NodePath("Caster")
 modifiers = NodePath("UnitModifiers")
 model = NodePath("PlayerModel")
 
-[node name="Components" type="Node" parent="Hero"]
+[node name="Components" type="Node" parent="."]
 
-[node name="NetworkTransform" type="MultiplayerSynchronizer" parent="Hero/Components" node_paths=PackedStringArray("entity")]
+[node name="NetworkTransform" type="MultiplayerSynchronizer" parent="Components" node_paths=PackedStringArray("entity")]
 root_path = NodePath("../..")
 replication_interval = 0.02
 delta_interval = 0.02
@@ -246,7 +208,7 @@ server_position = Vector3(nan, nan, nan)
 server_rotation = Vector3(nan, nan, nan)
 server_scale = Vector3(nan, nan, nan)
 
-[node name="NetworkHp" type="MultiplayerSynchronizer" parent="Hero/Components"]
+[node name="NetworkHp" type="MultiplayerSynchronizer" parent="Components"]
 root_path = NodePath("../..")
 replication_interval = 0.02
 delta_interval = 0.02
@@ -255,69 +217,69 @@ script = ExtResource("4_dqkch")
 current_health = 50
 metadata/_custom_type_script = "uid://bfhjfynop50wf"
 
-[node name="NetworkAnimationState" type="MultiplayerSynchronizer" parent="Hero/Components" node_paths=PackedStringArray("animation_player")]
+[node name="NetworkAnimationState" type="MultiplayerSynchronizer" parent="Components" node_paths=PackedStringArray("animation_player")]
 replication_interval = 0.02
 delta_interval = 0.02
 replication_config = SubResource("SceneReplicationConfig_f1ej7")
 script = ExtResource("4_3v2ag")
 animation_player = NodePath("../../PlayerModel/AnimationPlayer")
 
-[node name="CameraController" type="Node" parent="Hero/Components" node_paths=PackedStringArray("camera", "view_target")]
+[node name="CameraController" type="Node" parent="Components" node_paths=PackedStringArray("camera", "view_target")]
 script = ExtResource("15_oprun")
-camera = NodePath("../../../Camera3D")
+camera = NodePath("../../Camera")
 view_target = NodePath("../..")
 distance = 15.0
 catchup_damping = 1.0
 metadata/_custom_type_script = "uid://cw41hh8xohvjm"
 
-[node name="AnimationTreeSynchronizer" type="MultiplayerSynchronizer" parent="Hero/Components"]
+[node name="AnimationTreeSynchronizer" type="MultiplayerSynchronizer" parent="Components"]
 root_path = NodePath("../../PlayerModel/AnimationTree")
 replication_interval = 0.1
 delta_interval = 0.1
 replication_config = SubResource("SceneReplicationConfig_a8ls1")
 
-[node name="AnimationsBase" type="Node" parent="Hero/Components" node_paths=PackedStringArray("input_controller", "hero", "caster", "animation_tree")]
+[node name="AnimationsBase" type="Node" parent="Components" node_paths=PackedStringArray("hero", "caster", "animation_tree")]
 script = ExtResource("11_d2wvv")
-input_controller = NodePath("../../../InputController")
 hero = NodePath("../..")
 caster = NodePath("../../Caster")
 animation_tree = NodePath("../../PlayerModel/AnimationTree")
 
-[node name="ModelRotationSynchronizer" type="MultiplayerSynchronizer" parent="Hero/Components"]
+[node name="ModelRotationSynchronizer" type="MultiplayerSynchronizer" parent="Components"]
 replication_config = SubResource("SceneReplicationConfig_f1ej7")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Hero"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9794922, 0)
 shape = SubResource("CapsuleShape3D_g2els")
 
-[node name="PlayerModel" parent="Hero" instance=ExtResource("8_a8ls1")]
+[node name="PlayerModel" parent="." instance=ExtResource("8_a8ls1")]
 
-[node name="Skeleton3D" parent="Hero/PlayerModel/Armature" index="0"]
-bones/0/position = Vector3(0, 0.829948, 0)
+[node name="Skeleton3D" parent="PlayerModel/Armature" index="0"]
+bones/0/position = Vector3(0, 0.82747996, 0)
 bones/0/rotation = Quaternion(-2.9802326e-08, 1.1920928e-07, -2.5243543e-29, 1)
-bones/1/rotation = Quaternion(7.841809e-09, 6.201251e-09, -0.032000393, 0.99948794)
+bones/1/rotation = Quaternion(-5.055255e-09, -4.1399195e-09, 0.021343354, 0.9997722)
 bones/3/rotation = Quaternion(8.882343e-16, 4.7590512e-15, 5.821475e-11, 1)
-bones/6/rotation = Quaternion(0.09389789, 0.10787505, 0.66964126, 0.7287845)
-bones/7/rotation = Quaternion(-0.2713915, 1.1296743e-07, -5.382966e-08, 0.96246904)
-bones/9/rotation = Quaternion(0.1561633, -0.17701809, -0.6352657, 0.7353333)
-bones/10/rotation = Quaternion(-0.45425233, -1.0668118e-07, -6.2989656e-08, 0.8908731)
-bones/11/rotation = Quaternion(0.99669576, -1.47475046e-08, 1.3902134e-07, -0.08122575)
-bones/12/rotation = Quaternion(-0.23423454, 2.6799118e-12, -7.52003e-08, 0.9721801)
-bones/13/rotation = Quaternion(0.9987406, 1.1824384e-08, 7.9778424e-08, -0.050173067)
-bones/14/rotation = Quaternion(-0.14473236, 2.7424313e-12, 2.2547875e-08, 0.98947084)
-bones/15/position = Vector3(-0.11312069, 0.102675945, 0)
+bones/6/rotation = Quaternion(0.16830258, 0.17044532, 0.63863045, 0.7312823)
+bones/7/rotation = Quaternion(-0.44998047, 1.0698993e-07, -7.9288064e-08, 0.8930384)
+bones/9/rotation = Quaternion(0.11707981, -0.18834361, -0.6494448, 0.7273517)
+bones/10/rotation = Quaternion(-0.41677934, -1.0933784e-07, 2.0552124e-08, 0.9090077)
+bones/11/rotation = Quaternion(0.99737716, -1.31416e-08, 1.391164e-07, -0.07238077)
+bones/12/rotation = Quaternion(-0.20874405, 2.695624e-12, -6.701665e-08, 0.97797036)
+bones/13/rotation = Quaternion(0.9955125, 2.2301684e-08, 7.9520554e-08, -0.09463022)
+bones/14/rotation = Quaternion(-0.27284786, 2.6679217e-12, 4.2506997e-08, 0.9620573)
+bones/15/position = Vector3(-0.11312069, 0.09634339, 0)
 bones/15/rotation = Quaternion(0.7071068, 5.3385087e-08, 5.3385087e-08, 0.7071068)
 bones/17/position = Vector3(1.0398227e-08, 2.0699955e-09, 6.370502e-08)
-bones/19/position = Vector3(-0.39410162, 0.76644593, 0.0061195977)
+bones/19/position = Vector3(-0.39448357, 0.76992214, 0.008472323)
 bones/19/rotation = Quaternion(-0.047778815, 0.366911, 0.92703885, -0.060765684)
 bones/21/position = Vector3(5.6507947e-06, 1.570515e-05, -1.669209e-05)
+bones/23/position = Vector3(0.11312069, 0.10706985, 0)
 bones/23/rotation = Quaternion(0.7071068, -5.3385087e-08, -5.3385087e-08, 0.7071068)
 bones/25/position = Vector3(-2.9476466e-09, 2.0699944e-09, 6.3705016e-08)
-bones/27/position = Vector3(0.39203274, 0.76546985, 3.763882e-05)
+bones/27/position = Vector3(0.3887002, 0.79046154, 0.00015401037)
 bones/27/rotation = Quaternion(-0.0012944937, 0.7071056, 0.7071057, -0.0012946073)
 bones/29/position = Vector3(-1.1386778e-06, -8.6467907e-07, -1.2696355e-05)
 
-[node name="AnimationTree" type="AnimationTree" parent="Hero/PlayerModel"]
+[node name="AnimationTree" type="AnimationTree" parent="PlayerModel"]
 tree_root = SubResource("AnimationNodeStateMachine_487ah")
 advance_expression_base_node = NodePath("../../AnimationsBase")
 anim_player = NodePath("../AnimationPlayer")
@@ -329,8 +291,8 @@ parameters/Alive/UpperBodyCastAnim/current_state = "Cast1"
 parameters/Alive/UpperBodyCastAnim/transition_request = ""
 parameters/Alive/UpperBodyCastAnim/current_index = 0
 "parameters/Alive/TimeScale 2/scale" = 0.6499999999999986
-parameters/Alive/FullBodyCasts/active = true
-parameters/Alive/FullBodyCasts/internal_active = true
+parameters/Alive/FullBodyCasts/active = false
+parameters/Alive/FullBodyCasts/internal_active = false
 parameters/Alive/FullBodyCasts/request = 0
 "parameters/Alive/TimeScale 3/scale" = 0.75
 parameters/Alive/FullBodyCastAnim/current_state = "Jump"
@@ -338,7 +300,7 @@ parameters/Alive/FullBodyCastAnim/transition_request = ""
 parameters/Alive/FullBodyCastAnim/current_index = 1
 parameters/Alive/WalkBlend/blend_position = 0.0
 
-[node name="FootStepsAudio" type="AudioStreamPlayer3D" parent="Hero/PlayerModel" node_paths=PackedStringArray("animation_player")]
+[node name="FootStepsAudio" type="AudioStreamPlayer3D" parent="PlayerModel" node_paths=PackedStringArray("animation_player")]
 stream = ExtResource("16_a8ls1")
 unit_size = 5.81
 max_polyphony = 2
@@ -347,7 +309,7 @@ attenuation_filter_cutoff_hz = 12097.0
 script = ExtResource("12_4r5pv")
 animation_player = NodePath("../AnimationPlayer")
 
-[node name="VoiceAudio" type="AudioStreamPlayer3D" parent="Hero/PlayerModel" node_paths=PackedStringArray("animation_player", "animation_tree", "hero")]
+[node name="VoiceAudio" type="AudioStreamPlayer3D" parent="PlayerModel" node_paths=PackedStringArray("animation_player", "animation_tree", "hero")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6841979, 0)
 stream = ExtResource("5_fulsm")
 unit_size = 21.36
@@ -357,55 +319,55 @@ animation_player = NodePath("../AnimationPlayer")
 animation_tree = NodePath("../AnimationTree")
 hero = NodePath("../..")
 
-[node name="ScreenSpacePosition" type="Node3D" parent="Hero" node_paths=PackedStringArray("canvas_layer")]
+[node name="ScreenSpacePosition" type="Node3D" parent="." node_paths=PackedStringArray("canvas_layer")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 script = ExtResource("8_f1ej7")
 canvas_layer = NodePath("OverheadInfo")
 
-[node name="OverheadInfo" parent="Hero/ScreenSpacePosition" instance=ExtResource("5_health")]
+[node name="OverheadInfo" parent="ScreenSpacePosition" instance=ExtResource("5_health")]
 follow_viewport_enabled = false
 
-[node name="HPSync" type="Node" parent="Hero/ScreenSpacePosition" node_paths=PackedStringArray("range_control", "hp")]
+[node name="HPSync" type="Node" parent="ScreenSpacePosition" node_paths=PackedStringArray("range_control", "hp")]
 script = ExtResource("10_oprun")
 range_control = NodePath("../OverheadInfo/HealthContainer/HealthBar")
 hp = NodePath("../../Components/NetworkHp")
 metadata/_custom_type_script = "uid://btqg13317lydt"
 
-[node name="AnimationsBase" type="Node" parent="Hero" node_paths=PackedStringArray("input_controller", "hero", "caster", "animation_tree")]
+[node name="AnimationsBase" type="Node" parent="." node_paths=PackedStringArray("hero", "caster", "animation_tree")]
 script = ExtResource("11_d2wvv")
-input_controller = NodePath("../../InputController")
 hero = NodePath("..")
 caster = NodePath("../Caster")
 animation_tree = NodePath("../PlayerModel/AnimationTree")
 
-[node name="NetworkBoundingArea3D" type="Area3D" parent="Hero"]
+[node name="NetworkBoundingArea3D" type="Area3D" parent="."]
 collision_layer = 2147483648
 collision_mask = 2147483648
 monitoring = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Hero/NetworkBoundingArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NetworkBoundingArea3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.98449135, 0)
 shape = SubResource("SphereShape3D_3v2ag")
 
-[node name="NetworkVisionArea3D" type="Area3D" parent="Hero"]
+[node name="NetworkVisionArea3D" type="Area3D" parent="."]
+unique_name_in_owner = true
 collision_layer = 2147483648
 collision_mask = 2147483648
 monitorable = false
 script = ExtResource("6_tuyoq")
 metadata/_custom_type_script = "uid://xrbns0ylm83m"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Hero/NetworkVisionArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NetworkVisionArea3D"]
 shape = SubResource("SphereShape3D_tuyoq")
 
-[node name="Caster" type="Node3D" parent="Hero" node_paths=PackedStringArray("hero")]
+[node name="Caster" type="Node3D" parent="." node_paths=PackedStringArray("hero")]
 script = ExtResource("7_oprun")
 abilities_container = NodePath("Abilities")
 hero = NodePath("..")
 metadata/_custom_type_script = "uid://bxi4djnou368t"
 
-[node name="Abilities" type="Node" parent="Hero/Caster"]
+[node name="Abilities" type="Node" parent="Caster"]
 
-[node name="HitBoxArea" type="Area3D" parent="Hero" node_paths=PackedStringArray("hero", "hp")]
+[node name="HitBoxArea" type="Area3D" parent="." node_paths=PackedStringArray("hero", "hp")]
 collision_layer = 2
 collision_mask = 12
 script = ExtResource("7_qfm1y")
@@ -413,21 +375,23 @@ hero = NodePath("..")
 hp = NodePath("../Components/NetworkHp")
 metadata/_custom_type_script = "uid://5tihk4woc060"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Hero/HitBoxArea"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HitBoxArea"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_fulsm")
 debug_color = Color(0.9891284, 0, 0.29943526, 0.41960785)
 
-[node name="UnitModifiers" type="Node" parent="Hero" node_paths=PackedStringArray("carrier")]
+[node name="UnitModifiers" type="Node" parent="." node_paths=PackedStringArray("carrier")]
 script = ExtResource("16_qfm1y")
 modifiable_properties = ExtResource("17_qfm1y")
 carrier = NodePath("..")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera" type="Camera3D" parent="."]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 0.5533916, 0.83292127, 0, -0.83292127, 0.5533916, 0, 16.35, 7.479)
+top_level = true
 fov = 70.8
 size = 15.755
 near = 0.001
 
-[editable path="Hero/PlayerModel"]
-[editable path="Hero/ScreenSpacePosition/OverheadInfo"]
+[editable path="PlayerModel"]
+[editable path="ScreenSpacePosition/OverheadInfo"]
