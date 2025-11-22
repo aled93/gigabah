@@ -35,6 +35,9 @@ var player: Player:
 	set(val):
 		player = val
 
+		if not player:
+			return
+
 		var cam := %Camera as Camera3D
 		var cam_ctrl := %CameraController
 		if player == Player.local:
