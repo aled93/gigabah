@@ -30,28 +30,18 @@ func spawn_player(id: int) -> void:
 
 	_players[id] = player
 
-	var pawn := pawn_scene.instantiate() as Hero
-	pawn.name = "pawn_%d" % pawn.get_instance_id()
-	# TODO: implement spawn points
-	pawn.position.x = randf_range(-5, 5)
-	pawn.position.y = 2.0
-	pawn.position.z = randf_range(-10, 0)
+	var pawn := _create_pawn_for_player(player)
 
 	get_node(player_spawn_path).add_child(player)
-	get_node(pawn_spawn_path).add_child(pawn)
 
 	NetSync.set_visibility_for(id, player, true)
 	player.pawn = pawn
-
-	pawn.health.health_depleted.connect(respawn_client.bind(player))
 
 	var caster := pawn.caster
 	for ability_scene: PackedScene in default_abilities:
 		var ability := ability_scene.instantiate()
 		caster.get_node(caster.abilities_container).add_child(ability)
 		caster.add_ability(ability)
-
-	pawn.modifiers.add_modifier(HeroBaseModifier.new())
 
 
 func despawn_player(id: int) -> void:
@@ -66,11 +56,28 @@ func despawn_player(id: int) -> void:
 		player.pawn.queue_free()
 
 
-func respawn_client(client: Player) -> void:
-	var pawn := client.pawn
+func _create_pawn_for_player(player: Player) -> Hero:
+	var pawn := pawn_scene.instantiate() as Hero
+	pawn.name = "pawn_%d" % pawn.get_instance_id()
 
+	# TODO: implement spawn points
 	pawn.position.x = randf_range(-5, 5)
 	pawn.position.y = 2.0
 	pawn.position.z = randf_range(-10, 0)
 
-	pawn.health.current_health = 50
+	get_node(pawn_spawn_path).add_child(pawn)
+
+	pawn.health.health_depleted.connect(_on_player_hp_depleted.bind(player))
+
+	pawn.modifiers.add_modifier(HeroBaseModifier.new())
+
+	return pawn
+
+
+func _on_player_hp_depleted(player: Player) -> void:
+	player.pawn.queue_free()
+
+	await get_tree().create_timer(5.0).timeout
+
+	var pawn := _create_pawn_for_player(player)
+	player.pawn = pawn
