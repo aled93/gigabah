@@ -19,18 +19,12 @@ extends Node
 ## Degrees per second
 @export var actions_rotating_speed := 100.0
 
-var _local_client := true
+var local_player := false
+
 var _mouse_rotating_cam := false
 var _mouse_delta := Vector2.ZERO
 var _mouse_prev_mode: Input.MouseMode
 var _mouse_prev_pos := Vector2.ZERO
-
-
-func _ready() -> void:
-	var cl := owner as Player
-	if cl and cl.name.to_int() != multiplayer.get_unique_id():
-		_local_client = false
-		set_process_input(false)
 
 
 func _process(delta: float) -> void:
@@ -51,11 +45,14 @@ func _process(delta: float) -> void:
 		Quaternion.from_euler(view_target.global_rotation) * Vector3.UP,
 	)
 
-	if _local_client:
+	if local_player:
 		_handle_input(delta)
 
 
 func _input(event: InputEvent) -> void:
+	if not local_player:
+		return
+
 	match event:
 		_ when event.is_action(&"mouse_camera_rotation") and not event.is_echo():
 			if _mouse_rotating_cam != event.is_pressed():

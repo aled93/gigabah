@@ -31,6 +31,20 @@ var desired_facing_angle: float:
 	set(val):
 		desired_facing_angle = Utils.cycle_float(val, -PI, PI)
 
+var player: Player:
+	set(val):
+		player = val
+
+		var cam := %Camera as Camera3D
+		var cam_ctrl := %CameraController
+		if player == Player.local:
+			cam.make_current()
+			cam_ctrl.local_player = true
+		else:
+			if cam.current:
+				cam.clear_current(false)
+			cam_ctrl.local_player = false
+
 var _moving_facing_angle: float:
 	set(val):
 		_moving_facing_angle = val

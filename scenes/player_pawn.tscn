@@ -225,6 +225,7 @@ script = ExtResource("4_3v2ag")
 animation_player = NodePath("../../PlayerModel/AnimationPlayer")
 
 [node name="CameraController" type="Node" parent="Components" node_paths=PackedStringArray("camera", "view_target")]
+unique_name_in_owner = true
 script = ExtResource("15_oprun")
 camera = NodePath("../../Camera")
 view_target = NodePath("../..")

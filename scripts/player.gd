@@ -29,12 +29,9 @@ var pawn: Hero:
 func _enter_tree() -> void:
 	if peer_id == multiplayer.get_unique_id():
 		local = self
-		push_warning("local=%s" % self)
 
 
 func _attach_pawn() -> void:
-	push_warning("attaching pawn %s" % pawn)
-
 	pawn.input_controller = input_controller
 
 	if self == local:
@@ -52,6 +49,8 @@ func _attach_pawn() -> void:
 
 	if multiplayer.is_server():
 		NetSync.rpc_to_observing_peers(self, _rpc_attach_pawn, [pawn.get_path()])
+
+	pawn.player = self
 
 
 func _detach_pawn() -> void:
@@ -71,6 +70,8 @@ func _detach_pawn() -> void:
 
 	if multiplayer.is_server():
 		NetSync.rpc_to_observing_peers(self, _rpc_detach_pawn, [])
+
+	pawn.player = null
 
 
 func network_serialize() -> Variant:
